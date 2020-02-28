@@ -14,13 +14,19 @@ import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.Image;
 import android.media.ImageReader;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 
+import android.provider.Settings;
 import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
@@ -28,7 +34,9 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -43,19 +51,31 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.m2dl.pimpmypoutine.Camera.Models.PimpedPhoto;
+import com.m2dl.pimpmypoutine.Camera.MyLocationListener;
 import com.m2dl.pimpmypoutine.R;
+
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class AndroidCameraApi extends AppCompatActivity {
     private static final String TAG = "AndroidCameraApi";
     private Button takePictureButton;
+    private TextView textView;
+    double longitudeGPS, latitudeGPS;
+    private LocationManager locationManager;
+    private LocationListener listener;
+
     private TextureView textureView;
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
+
     static {
         ORIENTATIONS.append(Surface.ROTATION_0, 90);
         ORIENTATIONS.append(Surface.ROTATION_90, 0);
         ORIENTATIONS.append(Surface.ROTATION_180, 270);
         ORIENTATIONS.append(Surface.ROTATION_270, 180);
     }
+
     private String cameraId;
     protected CameraDevice cameraDevice;
     protected CameraCaptureSession cameraCaptureSessions;
@@ -68,36 +88,105 @@ public class AndroidCameraApi extends AppCompatActivity {
     private boolean mFlashSupported;
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         setContentView(R.layout.activity_android_camera_api);
         textureView = (TextureView) findViewById(R.id.texture);
         assert textureView != null;
         textureView.setSurfaceTextureListener(textureListener);
         takePictureButton = (Button) findViewById(R.id.btn_takepicture);
+        textView = (TextView) findViewById(R.id.textView5);
         assert takePictureButton != null;
+        /*listener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                System.out.println("onLocationChanged");
+                System.out.println("location.getLongitude()" + location.getLongitude());
+            }
+
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String s) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String s) {
+
+                Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(i);
+            }
+        };*/
+
+        if (ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
+                                ACCESS_FINE_LOCATION, Manifest.permission.INTERNET}
+                        , 10);
+            }
+            return;
+        }
+
         takePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                System.out.println("onClick");
+
+               /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    //noinspection MissingPermission
+                    if (checkSelfPermission(ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
+                        requestPermissions(new String[]{ACCESS_FINE_LOCATION},1340);
+                    }
+                    if (checkSelfPermission(ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    Activity#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for Activity#requestPermissions for more details.
+                        return;
+                    }
+                }
+                locationManager.requestLocationUpdates("gps", 5000, 0, listener);
+*/
                 takePicture();
             }
         });
+
+
+        //locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+
+
     }
+
     TextureView.SurfaceTextureListener textureListener = new TextureView.SurfaceTextureListener() {
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
             //open your camera here
             openCamera();
         }
+
         @Override
         public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
             // Transform you image captured size according to the surface width and height
         }
+
         @Override
         public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
             return false;
         }
+
         @Override
         public void onSurfaceTextureUpdated(SurfaceTexture surface) {
         }
@@ -110,10 +199,12 @@ public class AndroidCameraApi extends AppCompatActivity {
             cameraDevice = camera;
             createCameraPreview();
         }
+
         @Override
         public void onDisconnected(CameraDevice camera) {
             cameraDevice.close();
         }
+
         @Override
         public void onError(CameraDevice camera, int error) {
             cameraDevice.close();
@@ -128,11 +219,13 @@ public class AndroidCameraApi extends AppCompatActivity {
             createCameraPreview();
         }
     };
+
     protected void startBackgroundThread() {
         mBackgroundThread = new HandlerThread("Camera Background");
         mBackgroundThread.start();
         mBackgroundHandler = new Handler(mBackgroundThread.getLooper());
     }
+
     protected void stopBackgroundThread() {
         mBackgroundThread.quitSafely();
         try {
@@ -143,8 +236,9 @@ public class AndroidCameraApi extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
     protected void takePicture() {
-        if(null == cameraDevice) {
+        if (null == cameraDevice) {
             Log.e(TAG, "cameraDevice is null");
             return;
         }
@@ -171,20 +265,68 @@ public class AndroidCameraApi extends AppCompatActivity {
             // Orientation
             int rotation = getWindowManager().getDefaultDisplay().getRotation();
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
-            final File file = new File(Environment.getExternalStorageDirectory()+"/pic.jpg");
+            final File file = new File(Environment.getExternalStorageDirectory() + "/pic.jpg");
             ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
                 @Override
                 public void onImageAvailable(ImageReader reader) {
                     Image image = null;
                     try {
+                        Log.d("AndroidCameraApi0", "lol");
+
                         image = reader.acquireLatestImage();
                         ByteBuffer buffer = image.getPlanes()[0].getBuffer();
                         byte[] bytes = new byte[buffer.capacity()];
                         buffer.get(bytes);
+                    /*    LocationManager locationManager = (LocationManager)
+                                getSystemService(Context.LOCATION_SERVICE);
+                        MyLocationListener locationListener = new MyLocationListener(getApplicationContext());
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                // TODO: Consider calling
+                                //    Activity#requestPermissions
+                                // here to request the missing permissions, and then overriding
+                                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                //                                          int[] grantResults)
+                                // to handle the case where the user grants the permission. See the documentation
+                                // for Activity#requestPermissions for more details.
+                                return;
+                            }
+                        }
+                        assert locationManager != null;
+                        locationManager.requestLocationUpdates(
+                                LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
+
+                        Location location1 = new Location("phoneLocation");
+                        Log.d("AndroidCameraApi1", String.valueOf(location1.getLatitude()));
+
+                        toggleGPSUpdates(getCurrentFocus());*/
+                        getLocation();
+                        runOnUiThread(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                takePictureButton.setText("lat : " +  latitudeGPS + "long : " + longitudeGPS);
+
+                                // Stuff that updates the UI
+
+                            }
+                        });
+
+                        Location location = new Location("phoneLocation");
+                        location.setLatitude(latitudeGPS);
+                        location.setLongitude(longitudeGPS);
+                        Log.d("AndroidCameraApi", location.getProvider());
+                        Log.d("AndroidCameraApi", String.valueOf(location.getLongitude()));
+                        Log.d("AndroidCameraApi", String.valueOf(location.getLatitude()));
+                        PimpedPhoto pimpedPhoto = new PimpedPhoto(image, file.getPath(), location);
                         save(bytes);
                     } catch (FileNotFoundException e) {
+                        Log.d("AndroidCameraApi10", e.toString());
+
                         e.printStackTrace();
                     } catch (IOException e) {
+                        Log.d("AndroidCameraApi11", e.toString());
+
                         e.printStackTrace();
                     } finally {
                         if (image != null) {
@@ -192,6 +334,7 @@ public class AndroidCameraApi extends AppCompatActivity {
                         }
                     }
                 }
+
                 private void save(byte[] bytes) throws IOException {
                     OutputStream output = null;
                     try {
@@ -222,6 +365,7 @@ public class AndroidCameraApi extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
+
                 @Override
                 public void onConfigureFailed(CameraCaptureSession session) {
                 }
@@ -230,6 +374,7 @@ public class AndroidCameraApi extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
     protected void createCameraPreview() {
         try {
             SurfaceTexture texture = textureView.getSurfaceTexture();
@@ -238,7 +383,7 @@ public class AndroidCameraApi extends AppCompatActivity {
             Surface surface = new Surface(texture);
             captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
             captureRequestBuilder.addTarget(surface);
-            cameraDevice.createCaptureSession(Arrays.asList(surface), new CameraCaptureSession.StateCallback(){
+            cameraDevice.createCaptureSession(Arrays.asList(surface), new CameraCaptureSession.StateCallback() {
                 @Override
                 public void onConfigured(@NonNull CameraCaptureSession cameraCaptureSession) {
                     //The camera is already closed
@@ -249,6 +394,7 @@ public class AndroidCameraApi extends AppCompatActivity {
                     cameraCaptureSessions = cameraCaptureSession;
                     updatePreview();
                 }
+
                 @Override
                 public void onConfigureFailed(@NonNull CameraCaptureSession cameraCaptureSession) {
                     Toast.makeText(AndroidCameraApi.this, "Configuration change", Toast.LENGTH_SHORT).show();
@@ -258,6 +404,7 @@ public class AndroidCameraApi extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
     private void openCamera() {
         CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
         Log.e(TAG, "is camera open");
@@ -278,8 +425,9 @@ public class AndroidCameraApi extends AppCompatActivity {
         }
         Log.e(TAG, "openCamera X");
     }
+
     protected void updatePreview() {
-        if(null == cameraDevice) {
+        if (null == cameraDevice) {
             Log.e(TAG, "updatePreview error, return");
         }
         captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
@@ -289,6 +437,7 @@ public class AndroidCameraApi extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
     private void closeCamera() {
         if (null != cameraDevice) {
             cameraDevice.close();
@@ -299,6 +448,7 @@ public class AndroidCameraApi extends AppCompatActivity {
             imageReader = null;
         }
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_CAMERA_PERMISSION) {
@@ -309,6 +459,7 @@ public class AndroidCameraApi extends AppCompatActivity {
             }
         }
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -320,6 +471,7 @@ public class AndroidCameraApi extends AppCompatActivity {
             textureView.setSurfaceTextureListener(textureListener);
         }
     }
+
     @Override
     protected void onPause() {
         Log.e(TAG, "onPause");
@@ -327,4 +479,54 @@ public class AndroidCameraApi extends AppCompatActivity {
         stopBackgroundThread();
         super.onPause();
     }
+
+/*
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case 10:
+                configure_button();
+                break;
+            default:
+                break;
+        }
+    }*/
+
+    public LatLng getLocation ()
+    {
+        // Get the location manager
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        String bestProvider = locationManager.getBestProvider(criteria, false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    Activity#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for Activity#requestPermissions for more details.
+                //   return ;
+            }
+        }
+        Location location = locationManager.getLastKnownLocation(bestProvider);
+        Double lat,lon;
+        try {
+            lat = location.getLatitude ();
+            latitudeGPS = location.getLatitude ();
+            lon = location.getLongitude ();
+            longitudeGPS = location.getLongitude ();
+            System.out.println("location.getLongitude()" + location.getLongitude());
+            System.out.println("location.getLongitude()" + location.getLatitude());
+
+            return new LatLng(lat, lon);
+        }
+        catch (NullPointerException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

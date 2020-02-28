@@ -6,8 +6,8 @@ import android.media.Image;
 
 public class PimpedPhoto {
     private Image image;
-    private String imgUrl;
-    private Location location;
+    private String imgUrl;//url image firebase
+    private Location location;//ccordonnées GPS
 
     public PimpedPhoto(Image image, String imgUrl, Location location) {
         this.image = image;
