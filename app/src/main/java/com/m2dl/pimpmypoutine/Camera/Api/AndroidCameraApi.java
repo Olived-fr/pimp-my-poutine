@@ -1,4 +1,4 @@
-package com.m2dl.pimpmypoutine;
+package com.m2dl.pimpmypoutine.Camera.Api;
 
 import android.Manifest;
 import android.content.Context;
@@ -42,6 +42,8 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+
+import com.m2dl.pimpmypoutine.R;
 
 public class AndroidCameraApi extends AppCompatActivity {
     private static final String TAG = "AndroidCameraApi";
