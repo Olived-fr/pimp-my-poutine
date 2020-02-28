@@ -2,24 +2,25 @@ package com.m2dl.pimpmypoutine.Camera.Models;
 
 import android.graphics.Bitmap;
 import android.location.Location;
+import android.media.Image;
 
 public class PimpedPhoto {
-    private Bitmap bmp;
+    private Image image;
     private String imgUrl;
     private Location location;
 
-    public PimpedPhoto(Bitmap bmp, String imgUrl, Location location) {
-        this.bmp = bmp;
+    public PimpedPhoto(Image image, String imgUrl, Location location) {
+        this.image = image;
         this.imgUrl = imgUrl;
         this.location = location;
     }
 
-    public Bitmap getBmp() {
-        return bmp;
+    public Image getImage() {
+        return image;
     }
 
-    public void setBmp(Bitmap bmp) {
-        this.bmp = bmp;
+    public void setImage(Image image) {
+        this.image = image;
     }
 
     public String getImgUrl() {
