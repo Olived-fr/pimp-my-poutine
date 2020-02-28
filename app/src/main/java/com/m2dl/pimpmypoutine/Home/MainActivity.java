@@ -1,8 +1,10 @@
-package com.m2dl.pimpmypoutine;
+package com.m2dl.pimpmypoutine.Home;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.m2dl.pimpmypoutine.R;
 
 public class MainActivity extends AppCompatActivity {
 
