@@ -3,12 +3,13 @@ package com.m2dl.pimpmypoutine.Camera.Models;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.media.Image;
+import java.io.Serializable;
 
-public class PimpedPhoto {
+public class PimpedPhoto implements Serializable {
     private Image image;
     private String imgUrl;//url image firebase
-    private Location location;//ccordonnées GPS
-    private String path;
+    private Location location;//cordonnées GPS
+    private String path;//chemin de l'image dans l'espace de stockage du smartphone
 
     public PimpedPhoto(Image image, String imgUrl, Location location, String path) {
         this.image = image;

@@ -2,6 +2,7 @@ package com.m2dl.pimpmypoutine.Camera.Api;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
@@ -26,6 +27,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 
+import android.os.Parcelable;
 import android.provider.Settings;
 import android.util.Log;
 import android.util.Size;
@@ -33,7 +35,9 @@ import android.util.SparseIntArray;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +46,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serializable;
+import java.lang.invoke.ConstantCallSite;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,23 +55,26 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.m2dl.pimpmypoutine.Camera.Models.PimpedPhoto;
 import com.m2dl.pimpmypoutine.Camera.MyLocationListener;
+import com.m2dl.pimpmypoutine.Camera.Views.ShowPictureActivity;
 import com.m2dl.pimpmypoutine.R;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
-public class AndroidCameraApi extends AppCompatActivity {
+public class AndroidCameraApi extends AppCompatActivity implements Serializable{
     private static final String TAG = "AndroidCameraApi";
     private Button takePictureButton;
+    private RelativeLayout relativeLayoutPhoto;
     private TextView textView;
     double longitudeGPS, latitudeGPS;
     private LocationManager locationManager;
     private LocationListener listener;
-
+    public static PimpedPhoto pimpedPhoto;
     private TextureView textureView;
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
 
@@ -98,6 +107,9 @@ public class AndroidCameraApi extends AppCompatActivity {
         assert textureView != null;
         textureView.setSurfaceTextureListener(textureListener);
         takePictureButton = findViewById(R.id.btn_takepicture);
+        relativeLayoutPhoto = findViewById(R.id.relativeLayoutPhoto);
+
+
         textView = findViewById(R.id.textView5);
         assert takePictureButton != null;
         /*listener = new LocationListener() {
@@ -160,6 +172,7 @@ public class AndroidCameraApi extends AppCompatActivity {
                 locationManager.requestLocationUpdates("gps", 5000, 0, listener);
 */
                 takePicture();
+
             }
         });
 
@@ -249,8 +262,10 @@ public class AndroidCameraApi extends AppCompatActivity {
             if (characteristics != null) {
                 jpegSizes = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP).getOutputSizes(ImageFormat.JPEG);
             }
-            int width = 640;
-            int height = 480;
+            int width = relativeLayoutPhoto.getWidth();
+            int height = relativeLayoutPhoto.getHeight();
+            Log.d("AndroidCameraApi0", "width " + width + " height" + height );
+
             if (jpegSizes != null && 0 < jpegSizes.length) {
                 width = jpegSizes[0].getWidth();
                 height = jpegSizes[0].getHeight();
@@ -318,8 +333,12 @@ public class AndroidCameraApi extends AppCompatActivity {
                         Log.d("AndroidCameraApi", location.getProvider());
                         Log.d("AndroidCameraApi", String.valueOf(location.getLongitude()));
                         Log.d("AndroidCameraApi", String.valueOf(location.getLatitude()));
-                        PimpedPhoto pimpedPhoto = new PimpedPhoto(image, file.getPath(), location, file.getPath());
+                        pimpedPhoto = new PimpedPhoto(image, file.getPath(), location, file.getPath());
                         save(bytes);
+                        Intent showPicture = new Intent(AndroidCameraApi.this, ShowPictureActivity.class);
+                        //showPicture.putExtra("pimpedPhoto", pimpedPhoto);
+
+                        startActivity(showPicture);
                     } catch (FileNotFoundException e) {
                         Log.d("AndroidCameraApi10", e.toString());
 
