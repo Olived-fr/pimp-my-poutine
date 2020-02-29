@@ -94,11 +94,11 @@ public class AndroidCameraApi extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         setContentView(R.layout.activity_android_camera_api);
-        textureView = (TextureView) findViewById(R.id.texture);
+        textureView = findViewById(R.id.texture);
         assert textureView != null;
         textureView.setSurfaceTextureListener(textureListener);
-        takePictureButton = (Button) findViewById(R.id.btn_takepicture);
-        textView = (TextView) findViewById(R.id.textView5);
+        takePictureButton = findViewById(R.id.btn_takepicture);
+        textView = findViewById(R.id.textView5);
         assert takePictureButton != null;
         /*listener = new LocationListener() {
             @Override
@@ -318,7 +318,7 @@ public class AndroidCameraApi extends AppCompatActivity {
                         Log.d("AndroidCameraApi", location.getProvider());
                         Log.d("AndroidCameraApi", String.valueOf(location.getLongitude()));
                         Log.d("AndroidCameraApi", String.valueOf(location.getLatitude()));
-                        PimpedPhoto pimpedPhoto = new PimpedPhoto(image, file.getPath(), location);
+                        PimpedPhoto pimpedPhoto = new PimpedPhoto(image, file.getPath(), location, file.getPath());
                         save(bytes);
                     } catch (FileNotFoundException e) {
                         Log.d("AndroidCameraApi10", e.toString());
