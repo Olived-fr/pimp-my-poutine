@@ -69,7 +69,7 @@ public class AndroidCameraApi extends AppCompatActivity implements Serializable{
     private static final String TAG = "AndroidCameraApi";
     private Button takePictureButton;
     private RelativeLayout relativeLayoutPhoto;
-    private TextView textView;
+    private TextView textView5;
     double longitudeGPS, latitudeGPS;
     private LocationManager locationManager;
     private LocationListener listener;
@@ -106,10 +106,11 @@ public class AndroidCameraApi extends AppCompatActivity implements Serializable{
         assert textureView != null;
         textureView.setSurfaceTextureListener(textureListener);
         takePictureButton = findViewById(R.id.btn_takepicture);
+        textView5 = findViewById(R.id.textView5);
         relativeLayoutPhoto = findViewById(R.id.relativeLayoutPhoto);
 
 
-        textView = findViewById(R.id.textView5);
+        textView5 = findViewById(R.id.textView5);
         assert takePictureButton != null;
         /*listener = new LocationListener() {
             @Override
@@ -319,7 +320,7 @@ public class AndroidCameraApi extends AppCompatActivity implements Serializable{
 
                             @Override
                             public void run() {
-                                takePictureButton.setText("lat : " +  latitudeGPS + "long : " + longitudeGPS);
+                                textView5.setText("lat : " +  latitudeGPS + "long : " + longitudeGPS);
 
                                 // Stuff that updates the UI
 
@@ -335,7 +336,7 @@ public class AndroidCameraApi extends AppCompatActivity implements Serializable{
                         pimpedPhoto = new PimpedPhoto(image, file.getPath(), location, file.getPath());
                         save(bytes);
                         Intent showPicture = new Intent(AndroidCameraApi.this, ShowPictureActivity.class);
-                        //showPicture.putExtra("pimpedPhoto", pimpedPhoto);
+                        showPicture.putExtra("pathPhoto", pimpedPhoto.getPath());
 
                         startActivity(showPicture);
                     } catch (FileNotFoundException e) {

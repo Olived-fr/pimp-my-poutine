@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
@@ -22,8 +23,8 @@ import java.io.File;
 public class ShowPictureActivity extends AppCompatActivity {
 
     private PimpedPhoto pimpedPhoto;
-    private ImageButton returnButton;
-    private ImageButton validButton;
+    private Button returnButton;
+    private Button validButton;
     private ImageView imageToValid;
     //Handler mHandler;
     @Override
@@ -34,10 +35,11 @@ public class ShowPictureActivity extends AppCompatActivity {
         returnButton = findViewById(R.id.returnButton);
         validButton = findViewById(R.id.validButton);
         imageToValid = findViewById(R.id.imageToValid);
+        Intent intent = getIntent();
 
-          //  PimpedPhoto pimpedPhoto = (PimpedPhoto) intent.getSerializableExtra("pimpedPhoto");
+            String pimpedPhoto = intent.getStringExtra("pathPhoto");
             if (AndroidCameraApi.pimpedPhoto != null) {
-                final File imgFile = new File(AndroidCameraApi.pimpedPhoto.getPath());
+                final File imgFile = new File(pimpedPhoto);
                 Log.d("AndroidCameraApi", imgFile.getAbsolutePath());
                 Log.d("AndroidCameraApi", imgFile.getPath());
            //     Log.d("AndroidCameraApi", String.valueOf(pimpedPhoto.getLocation().getLatitude()));
