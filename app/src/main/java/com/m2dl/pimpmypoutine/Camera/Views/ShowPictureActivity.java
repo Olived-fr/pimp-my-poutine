@@ -2,7 +2,6 @@ package com.m2dl.pimpmypoutine.Camera.Views;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.m2dl.pimpmypoutine.Camera.Api.AndroidCameraApi;
 import com.m2dl.pimpmypoutine.Camera.Models.PimpedPhoto;
 import com.m2dl.pimpmypoutine.R;
 
@@ -31,14 +30,14 @@ public class ShowPictureActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo);
-        Log.d("ShowPictureActivity", " lat " + String.valueOf(AndroidCameraApi.pimpedPhoto.getLocation().getLatitude()));
+        Log.d("ShowPictureActivity", " lat " + String.valueOf(CameraActivity.pimpedPhoto.getLocation().getLatitude()));
         returnButton = findViewById(R.id.returnButton);
         validButton = findViewById(R.id.validButton);
         imageToValid = findViewById(R.id.imageToValid);
         Intent intent = getIntent();
 
             String pimpedPhoto = intent.getStringExtra("pathPhoto");
-            if (AndroidCameraApi.pimpedPhoto != null) {
+            if (CameraActivity.pimpedPhoto != null) {
                 final File imgFile = new File(pimpedPhoto);
                 Log.d("AndroidCameraApi", imgFile.getAbsolutePath());
                 Log.d("AndroidCameraApi", imgFile.getPath());
