@@ -32,7 +32,7 @@ public class ShowPictureActivity extends AppCompatActivity {
         setContentView(R.layout.activity_photo);
         Log.d("ShowPictureActivity", " lat " + String.valueOf(AndroidCameraApi.pimpedPhoto.getLocation().getLatitude()));
         returnButton = findViewById(R.id.returnButton);
-        validButton = findViewById(R.id.texture);
+        validButton = findViewById(R.id.validButton);
         imageToValid = findViewById(R.id.imageToValid);
 
           //  PimpedPhoto pimpedPhoto = (PimpedPhoto) intent.getSerializableExtra("pimpedPhoto");
@@ -51,15 +51,29 @@ public class ShowPictureActivity extends AppCompatActivity {
 
                             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                             Log.d("AndroidCameraApi", myBitmap.getHeight() + " w " + myBitmap.getWidth());
-
-                          imageToValid.setImageBitmap(RotateBitmap(myBitmap, 90));
+                            //A utiliser si pb d'angle'
+                            //imageToValid.setImageBitmap(RotateBitmap(myBitmap, 0));
+                            imageToValid.setImageBitmap(myBitmap);
                         }
                     });
                 }
             }
 
+        validButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-       // mHandler = new Handler();
+
+            }
+        });       // mHandler = new Handler();
+        returnButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+
+            }
+        });
+
 
     }
     public static Bitmap RotateBitmap(Bitmap source, float angle)
