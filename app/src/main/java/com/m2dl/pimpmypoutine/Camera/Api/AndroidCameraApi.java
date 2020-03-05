@@ -60,7 +60,6 @@ import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.m2dl.pimpmypoutine.Camera.Models.PimpedPhoto;
-import com.m2dl.pimpmypoutine.Camera.MyLocationListener;
 import com.m2dl.pimpmypoutine.Camera.Views.ShowPictureActivity;
 import com.m2dl.pimpmypoutine.R;
 

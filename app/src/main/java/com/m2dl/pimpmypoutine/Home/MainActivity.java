@@ -72,10 +72,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        textureView = (TextureView) findViewById(R.id.textureview);
+     //   textureView = (TextureView) findViewById(R.id.textureview);
         textureView.setSurfaceTextureListener(surfaceTextureListener);
 
-        getpicture = (Button) findViewById(R.id.getpicture);
+      //  getpicture = (Button) findViewById(R.id.getpicture);
         getpicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
