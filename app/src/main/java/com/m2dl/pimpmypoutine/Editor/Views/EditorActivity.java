@@ -14,7 +14,7 @@ import com.m2dl.pimpmypoutine.R;
 
 
 public class EditorActivity extends View {
-    Bitmap bitmap;
+    Bitmap bitmap, bitmap2;
     float x = 200;
     float y = 200;
 
@@ -24,6 +24,7 @@ public class EditorActivity extends View {
         Drawable background = new BitmapDrawable(backgroundBitmap);
         this.setBackground(background);
         bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+        bitmap2 = BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_launcher_round);
     }
 
     @Override
@@ -49,6 +50,7 @@ public class EditorActivity extends View {
     protected void onDraw(Canvas canvas) {
         // TODO Auto-generated method stub
         super.onDraw(canvas);
+        canvas.drawBitmap(bitmap2, 0, 0, null);
         canvas.drawBitmap(bitmap, x, y, null);
     }
 
