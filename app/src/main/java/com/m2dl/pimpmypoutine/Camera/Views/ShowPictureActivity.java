@@ -3,6 +3,7 @@ package com.m2dl.pimpmypoutine.Camera.Views;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.m2dl.pimpmypoutine.Camera.Models.PimpedPhoto;
+import com.m2dl.pimpmypoutine.Editor.Views.EditorActivity;
 import com.m2dl.pimpmypoutine.R;
 
 import android.content.Intent;
@@ -36,34 +37,37 @@ public class ShowPictureActivity extends AppCompatActivity {
         imageToValid = findViewById(R.id.imageToValid);
         Intent intent = getIntent();
 
-            String pimpedPhoto = intent.getStringExtra("pathPhoto");
-            if (CameraActivity.pimpedPhoto != null) {
-                final File imgFile = new File(pimpedPhoto);
-                Log.d("AndroidCameraApi", imgFile.getAbsolutePath());
-                Log.d("AndroidCameraApi", imgFile.getPath());
-           //     Log.d("AndroidCameraApi", String.valueOf(pimpedPhoto.getLocation().getLatitude()));
+        final String pimpedPhoto = intent.getStringExtra("pathPhoto");
+        if (CameraActivity.pimpedPhoto != null) {
+            final File imgFile = new File(pimpedPhoto);
+            Log.d("AndroidCameraApi", imgFile.getAbsolutePath());
+            Log.d("AndroidCameraApi", imgFile.getPath());
+            //     Log.d("AndroidCameraApi", String.valueOf(pimpedPhoto.getLocation().getLatitude()));
 
-                if (imgFile.exists()) {
+            if (imgFile.exists()) {
 
-                    Handler mHandler = new Handler(getMainLooper());
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
+                Handler mHandler = new Handler(getMainLooper());
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
 
-                            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                            Log.d("AndroidCameraApi", myBitmap.getHeight() + " w " + myBitmap.getWidth());
-                            //A utiliser si pb d'angle'
-                            //imageToValid.setImageBitmap(RotateBitmap(myBitmap, 0));
-                            imageToValid.setImageBitmap(myBitmap);
-                        }
-                    });
-                }
+                        Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                        Log.d("AndroidCameraApi", myBitmap.getHeight() + " w " + myBitmap.getWidth());
+                        //A utiliser si pb d'angle'
+                        //imageToValid.setImageBitmap(RotateBitmap(myBitmap, 0));
+                        imageToValid.setImageBitmap(myBitmap);
+                    }
+                });
             }
+        }
 
         validButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent editor = new Intent(ShowPictureActivity.this, EditorActivity.class);
+                editor.putExtra("pathPhoto", pimpedPhoto);
 
+                startActivity(editor);
 
             }
         });       // mHandler = new Handler();

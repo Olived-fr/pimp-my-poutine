@@ -21,7 +21,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Home.MainActivity">
+        <activity android:name=".Camera.Views.ShowPictureActivity"/>
+        <activity android:name=".Editor.Views.EditorActivity"/>
+
+        <activity android:name=".Camera.Views.CameraActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
