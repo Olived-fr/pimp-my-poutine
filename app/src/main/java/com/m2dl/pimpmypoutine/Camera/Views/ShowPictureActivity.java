@@ -3,7 +3,6 @@ package com.m2dl.pimpmypoutine.Camera.Views;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.m2dl.pimpmypoutine.Camera.Models.PimpedPhoto;
-import com.m2dl.pimpmypoutine.Editor.Views.EditorActivity;
 import com.m2dl.pimpmypoutine.R;
 
 import android.content.Intent;
@@ -37,7 +36,7 @@ public class ShowPictureActivity extends AppCompatActivity {
         imageToValid = findViewById(R.id.imageToValid);
         Intent intent = getIntent();
 
-            final String pimpedPhoto = intent.getStringExtra("pathPhoto");
+            String pimpedPhoto = intent.getStringExtra("pathPhoto");
             if (CameraActivity.pimpedPhoto != null) {
                 final File imgFile = new File(pimpedPhoto);
                 Log.d("AndroidCameraApi", imgFile.getAbsolutePath());
@@ -64,10 +63,7 @@ public class ShowPictureActivity extends AppCompatActivity {
         validButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent editor = new Intent(ShowPictureActivity.this, EditorActivity.class);
-                editor.putExtra("pathPhoto", pimpedPhoto);
 
-                startActivity(editor);
 
             }
         });       // mHandler = new Handler();
