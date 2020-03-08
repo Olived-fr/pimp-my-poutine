@@ -26,6 +26,9 @@ import static com.m2dl.pimpmypoutine.Editor.Views.EditorActivity.pimpedPhoto;
 
 public class EditorView extends View {
         Bitmap bitmap, bitmap2;
+        private String luminosityHexa;
+        int hexa ;
+    int color;
     float x = 200;
     float y = 200;
     float luminosity = 0;
@@ -61,6 +64,18 @@ public class EditorView extends View {
 
                     System.out.println("lightSensor value d " + value + " last " + luminosity);
                     luminosity = value;
+
+                    float lumi = luminosity;
+                    if (lumi > 255) lumi = 255;
+                    if (lumi < 100) lumi = 100;
+
+                    //hexa = Integer.parseInt(Integer.toString((int) lumi,16));
+                    hexa = (int) lumi;
+                  //  if(Integer.toString((int) lumi,16).length() < 2 ) hexa = Integer.parseInt("0" + hexa);
+
+                    color = (hexa & 0xff) << 24 | (hexa & 0xff) << 16 | (hexa & 0xff) << 8 | (hexa & 0xff);
+                //    luminosityHexa =  "0x00" + hexa +  hexa +  hexa;
+                    System.out.println("hexa " + color);
                     invalidate();
 
                 }
@@ -72,19 +87,6 @@ public class EditorView extends View {
                 System.out.println("lightSensor value " + accuracy);
             }
         };
-      /*  lightEventListener = new SensorEventListener() {
-            @Override
-            public void onSensorChanged(SensorEvent sensorEvent) {
-                float value = sensorEvent.values[0];
-                System.out.println("lightSensor value " + value);
-
-            }
-
-            @Override
-            public void onAccuracyChanged(Sensor sensor, int i) {
-
-            }
-        };*/
         sensorManager.registerListener(
                 listener, lightSensor, SensorManager.SENSOR_DELAY_UI);
 
@@ -121,7 +123,7 @@ public class EditorView extends View {
 
        // paint.setAntiAlias(true);
        // paint.setColor(500);
-        canvas.drawBitmap(makeTintedBitmap(bitmap2, (int) luminosity * 10), 0, 0, paint);
+        canvas.drawBitmap(makeTintedBitmap(bitmap2, color), 0, 0, paint);
         canvas.drawBitmap(bitmap, x, y, null);
     }
     public Bitmap makeTintedBitmap(Bitmap src, int color) {
