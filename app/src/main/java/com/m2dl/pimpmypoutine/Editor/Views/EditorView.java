@@ -10,6 +10,10 @@ import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,32 +21,71 @@ import android.widget.Toast;
 
 import com.m2dl.pimpmypoutine.R;
 
+import static android.content.Context.SENSOR_SERVICE;
 import static com.m2dl.pimpmypoutine.Editor.Views.EditorActivity.pimpedPhoto;
 
 public class EditorView extends View {
         Bitmap bitmap, bitmap2;
     float x = 200;
     float y = 200;
-    private Button buttonFiltre1;
+    Paint paint = new Paint();
+    private SensorManager sensorManager;
+    private Sensor lightSensor;
+    private SensorEventListener lightEventListener;
+    // Bitmap drawingBitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.ic_launcher_background);
+    private float maxValue;
 
     public EditorView(Context context, AttributeSet attrs ) {
         super(context, attrs);
         Bitmap backgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher_background);
         Drawable background = new BitmapDrawable(backgroundBitmap);
         this.setBackground(background);
+        sensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
+        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        if (lightSensor == null) {
+            System.out.println("lightSensor == null");
+        }
+        maxValue = lightSensor.getMaximumRange();
 
         //bitmap = BitmapFactory.decodeFile("./app/res/mipmap-hdpi/ic_launcher.png");
         bitmap = BitmapFactory.decodeFile(pimpedPhoto);
 
         //  bitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_launcher_round);
         bitmap2 = BitmapFactory.decodeFile(pimpedPhoto);
-        //  buttonFiltre1 = findViewById(R.id.buttonFiltre1);
-     /*   buttonFiltre1.setOnClickListener(new View.OnClickListener() {
+        SensorEventListener listener = new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent sensorEvent) {
+                float value = sensorEvent.values[0];
+                System.out.println("lightSensor value d " + value);            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {
+                //float value = sensorEvent.values[0];
+                System.out.println("lightSensor value " + accuracy);
+            }
+        };
+      /*  lightEventListener = new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent sensorEvent) {
+                float value = sensorEvent.values[0];
+                System.out.println("lightSensor value " + value);
+
+            }
+
             @Override
             public void onAccuracyChanged(Sensor sensor, int i) {
 
             }
-        });*/
+        };*/
+        sensorManager.registerListener(
+                listener, lightSensor, SensorManager.SENSOR_DELAY_UI);
+
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        System.out.println("test");
+
     }
 
     @Override
