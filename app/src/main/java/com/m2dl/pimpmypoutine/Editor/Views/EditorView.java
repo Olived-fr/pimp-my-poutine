@@ -27,14 +27,16 @@ import static com.m2dl.pimpmypoutine.Editor.Views.EditorActivity.pimpedPhoto;
 public class EditorView extends View {
         Bitmap bitmap, bitmap2;
         private String luminosityHexa;
-        int hexa ;
+        int hexa, hexa1, hexa2, hexa3 ;
     int color;
+    int colorMagnet = (0xff) << 24 | (0xff) << 16 | (0xff) << 8 | (0xff) ;
     float x = 200;
     float y = 200;
     float luminosity = 0;
     Paint paint = new Paint();
     private SensorManager sensorManager;
     private Sensor lightSensor;
+    private Sensor mMagneticField;
     private SensorEventListener lightEventListener;
     // Bitmap drawingBitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.ic_launcher_background);
     private float maxValue;
@@ -46,6 +48,8 @@ public class EditorView extends View {
         this.setBackground(background);
         sensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        mMagneticField = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
         if (lightSensor == null) {
             System.out.println("lightSensor == null");
         }
@@ -59,15 +63,18 @@ public class EditorView extends View {
         SensorEventListener listener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
+                System.out.println("lightSensor value d " );
+                System.out.println(" lightSensor alues[0]x " + sensorEvent.values);
+
                 float value = sensorEvent.values[0];
                 if (luminosity < value - 5 || luminosity > value + 5) {
 
                     System.out.println("lightSensor value d " + value + " last " + luminosity);
                     luminosity = value;
 
-                    float lumi = luminosity;
+                    float lumi = luminosity * 5;
                     if (lumi > 255) lumi = 255;
-                    if (lumi < 100) lumi = 100;
+                  //  if (lumi < 100) lumi = 100;
 
                     //hexa = Integer.parseInt(Integer.toString((int) lumi,16));
                     hexa = (int) lumi;
@@ -87,9 +94,74 @@ public class EditorView extends View {
                 System.out.println("lightSensor value " + accuracy);
             }
         };
+
+        SensorEventListener listenerMagnetic = new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent sensorEvent) {
+                float value = sensorEvent.values[0];
+                float [] values = sensorEvent.values;
+                System.out.println("sensorEvent.values[0].values[0]x " + value);
+
+                 synchronized (this) {
+                         float magField_x = values[0];
+                     float magField_y = values[1];
+                     float magField_z = values[2];
+                         System.out.println("magField_x " + magField_x + " magField_y " + magField_y + " magField_z " + magField_z);
+                     int magField_xResult = (int) (150  + magField_x);
+                     int magField_yResult = (int) (150  + magField_y);
+                     int magField_zResult = (int) (150  + magField_z);
+                        // float lumi = luminosity;
+                         if (magField_xResult > 255) magField_xResult = 255;
+                         if (magField_xResult < 0) magField_xResult = 0;
+                     if (magField_yResult > 255) magField_yResult = 255;
+                     if (magField_yResult < 0) magField_yResult = 0;
+                     if (magField_zResult > 255) magField_zResult = 255;
+                     if (magField_zResult < 0) magField_zResult = 0;
+                         //hexa = Integer.parseInt(Integer.toString((int) lumi,16));
+                     hexa1 = (int) magField_xResult;
+                     hexa2 = (int) magField_yResult;
+                     hexa3 = (int) magField_zResult;
+                         //  if(Integer.toString((int) lumi,16).length() < 2 ) hexa = Integer.parseInt("0" + hexa);
+
+                     colorMagnet = (0xff) << 24 | (hexa1 & 0xff) << 16 | (hexa2 & 0xff) << 8 | (hexa3 & 0xff);
+                         //    luminosityHexa =  "0x00" + hexa +  hexa +  hexa;
+                         System.out.println("hexa " + color);
+                         invalidate();
+
+                     }
+              /*  if (luminosity < value - 5 || luminosity > value + 5) {
+
+                    System.out.println("lightSensor value d " + value + " last " + luminosity);
+                    luminosity = value;
+
+                    float lumi = luminosity;
+                    if (lumi > 255) lumi = 255;
+                    if (lumi < 100) lumi = 100;
+
+                    //hexa = Integer.parseInt(Integer.toString((int) lumi,16));
+                    hexa = (int) lumi;
+                    //  if(Integer.toString((int) lumi,16).length() < 2 ) hexa = Integer.parseInt("0" + hexa);
+
+                    color = (hexa & 0xff) << 24 | (hexa & 0xff) << 16 | (hexa & 0xff) << 8 | (hexa & 0xff);
+                    //    luminosityHexa =  "0x00" + hexa +  hexa +  hexa;
+                    System.out.println("hexa " + color);
+                    invalidate();
+
+                }*/
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {
+                //float value = sensorEvent.values[0];
+                System.out.println("onAccuracyChanged value " + accuracy);
+            }
+        };
         sensorManager.registerListener(
                 listener, lightSensor, SensorManager.SENSOR_DELAY_UI);
-
+       // sensorManager.registerListener(
+        //        listener, mMagneticField, SensorManager.SENSOR_DELAY_UI);
+        sensorManager.registerListener(
+                listenerMagnetic, mMagneticField, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
@@ -130,7 +202,7 @@ public class EditorView extends View {
         Bitmap result = Bitmap.createBitmap(src.getWidth(), src.getHeight(), src.getConfig());
         Canvas c = new Canvas(result);
         Paint paint = new Paint();
-        paint.setColorFilter(new LightingColorFilter(color,0));
+        paint.setColorFilter(new LightingColorFilter(color,colorMagnet));
         c.drawBitmap(src, 0, 0, paint);
         return result;
     }
