@@ -28,6 +28,7 @@ public class EditorView extends View {
         Bitmap bitmap, bitmap2;
     float x = 200;
     float y = 200;
+    float luminosity = 0;
     Paint paint = new Paint();
     private SensorManager sensorManager;
     private Sensor lightSensor;
@@ -56,7 +57,14 @@ public class EditorView extends View {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
                 float value = sensorEvent.values[0];
-                System.out.println("lightSensor value d " + value);            }
+                if (luminosity < value - 5 || luminosity > value + 5) {
+
+                    System.out.println("lightSensor value d " + value + " last " + luminosity);
+                    luminosity = value;
+                    invalidate();
+
+                }
+            }
 
             @Override
             public void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -113,7 +121,7 @@ public class EditorView extends View {
 
        // paint.setAntiAlias(true);
        // paint.setColor(500);
-        canvas.drawBitmap(makeTintedBitmap(bitmap2, 200), 0, 0, paint);
+        canvas.drawBitmap(makeTintedBitmap(bitmap2, (int) luminosity * 10), 0, 0, paint);
         canvas.drawBitmap(bitmap, x, y, null);
     }
     public Bitmap makeTintedBitmap(Bitmap src, int color) {
