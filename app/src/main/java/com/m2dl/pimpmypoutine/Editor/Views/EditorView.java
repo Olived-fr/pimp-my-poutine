@@ -40,7 +40,7 @@ public class EditorView extends View {
     private Sensor mMagneticField;
     private SensorEventListener lightEventListener;
     private float maxValue;
-
+View view;
     public EditorView(Context context, AttributeSet attrs ) {
         super(context, attrs);
         Bitmap backgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher_background);
@@ -54,12 +54,13 @@ public class EditorView extends View {
             System.out.println("lightSensor == null");
         }
         maxValue = lightSensor.getMaximumRange();
+        BitmapFactory.Options bmpFactory = new BitmapFactory.Options();
+        bmpFactory.inSampleSize = 2;
+        bitmap2 = BitmapFactory.decodeFile(pimpedPhoto, bmpFactory);
 
         //bitmap = BitmapFactory.decodeFile("./app/res/mipmap-hdpi/ic_launcher.png");
         bitmap = BitmapFactory.decodeFile(pimpedPhoto);
 
-        //  bitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_launcher_round);
-        bitmap2 = BitmapFactory.decodeFile(pimpedPhoto);
         SensorEventListener listener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
@@ -69,7 +70,7 @@ public class EditorView extends View {
                 float value = sensorEvent.values[0];
                 if (luminosity < value - 5 || luminosity > value + 5) {
 
-                    System.out.println("lightSensor value d " + value + " last " + luminosity);
+                   // System.out.println("lightSensor value d " + value + " last " + luminosity);
                     luminosity = value;
 
                     float lumi = luminosity * 5;
@@ -84,7 +85,7 @@ public class EditorView extends View {
 
             @Override
             public void onAccuracyChanged(Sensor sensor, int accuracy) {
-                System.out.println("lightSensor value " + accuracy);
+               // System.out.println("lightSensor value " + accuracy);
             }
         };
 
@@ -93,13 +94,13 @@ public class EditorView extends View {
             public void onSensorChanged(SensorEvent sensorEvent) {
                 float value = sensorEvent.values[0];
                 float [] values = sensorEvent.values;
-                System.out.println("sensorEvent.values[0].values[0]x " + value);
+              //  System.out.println("sensorEvent.values[0].values[0]x " + value);
 
                  synchronized (this) {
                          float magField_x = values[0];
                      float magField_y = values[1];
                      float magField_z = values[2];
-                         System.out.println("magField_x " + magField_x + " magField_y " + magField_y + " magField_z " + magField_z);
+                   //      System.out.println("magField_x " + magField_x + " magField_y " + magField_y + " magField_z " + magField_z);
                      int magField_xResult = (int) (150  + magField_x);
                      int magField_yResult = (int) (150  + magField_y);
                      int magField_zResult = (int) (150  + magField_z);
@@ -115,7 +116,7 @@ public class EditorView extends View {
                      hexa3 = (int) magField_zResult;
 
                      colorMagnet = (0xff) << 24 | (hexa1 & 0xff) << 16 | (hexa2 & 0xff) << 8 | (hexa3 & 0xff);
-                         System.out.println("hexa " + color);
+                         //System.out.println("hexa " + color);
                          invalidate();
 
                      }
@@ -124,7 +125,7 @@ public class EditorView extends View {
             @Override
             public void onAccuracyChanged(Sensor sensor, int accuracy) {
                 //float value = sensorEvent.values[0];
-                System.out.println("onAccuracyChanged value " + accuracy);
+                //System.out.println("onAccuracyChanged value " + accuracy);
             }
         };
         sensorManager.registerListener(
