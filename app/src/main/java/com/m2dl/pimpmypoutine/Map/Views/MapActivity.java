@@ -40,7 +40,6 @@ public class MapActivity extends AppCompatActivity {
 
     }
 
-
 //    //Récupérer un png depuis /assets
 //    AssetManager manager = getAssets();
 //    InputStream open = manager.open("maps_marker_black_icon.png");
