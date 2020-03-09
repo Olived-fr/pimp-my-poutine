@@ -22,11 +22,10 @@ import java.io.File;
 
 public class ShowPictureActivity extends AppCompatActivity {
 
-    private PimpedPhoto pimpedPhoto;
     private Button returnButton;
     private Button validButton;
     private ImageView imageToValid;
-    //Handler mHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +41,6 @@ public class ShowPictureActivity extends AppCompatActivity {
             final File imgFile = new File(pimpedPhoto);
             Log.d("AndroidCameraApi", imgFile.getAbsolutePath());
             Log.d("AndroidCameraApi", imgFile.getPath());
-            //     Log.d("AndroidCameraApi", String.valueOf(pimpedPhoto.getLocation().getLatitude()));
 
             if (imgFile.exists()) {
 
@@ -54,7 +52,6 @@ public class ShowPictureActivity extends AppCompatActivity {
                         Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                         Log.d("AndroidCameraApi", myBitmap.getHeight() + " w " + myBitmap.getWidth());
                         //A utiliser si pb d'angle'
-                        //imageToValid.setImageBitmap(RotateBitmap(myBitmap, 0));
                         imageToValid.setImageBitmap(myBitmap);
                     }
                 });
@@ -70,7 +67,7 @@ public class ShowPictureActivity extends AppCompatActivity {
                 startActivity(editor);
 
             }
-        });       // mHandler = new Handler();
+        });
         returnButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,33 +85,4 @@ public class ShowPictureActivity extends AppCompatActivity {
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
     }
 
-    /*protected void onHandleIntent(Intent intent) {
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                Intent intent = getIntent();
-                if (intent != null){
-                    PimpedPhoto pimpedPhoto = intent.getParcelableExtra("pimpedPhoto");
-                    if (pimpedPhoto != null){
-                        final File imgFile = new File(pimpedPhoto.getPath());
-
-                        if(imgFile.exists()) {
-
-                            Handler mHandler = new Handler(getMainLooper());
-                            mHandler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-
-                                    imageToValid.setImageBitmap(myBitmap);                        }
-                            });
-
-
-
-
-                        }
-                    }
-                }            }
-        });
-    }*/
 }

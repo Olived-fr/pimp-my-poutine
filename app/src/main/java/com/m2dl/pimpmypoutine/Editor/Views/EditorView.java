@@ -38,7 +38,6 @@ public class EditorView extends View {
     private Sensor lightSensor;
     private Sensor mMagneticField;
     private SensorEventListener lightEventListener;
-    // Bitmap drawingBitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.ic_launcher_background);
     private float maxValue;
 
     public EditorView(Context context, AttributeSet attrs ) {
@@ -74,14 +73,8 @@ public class EditorView extends View {
 
                     float lumi = luminosity * 5;
                     if (lumi > 255) lumi = 255;
-                  //  if (lumi < 100) lumi = 100;
-
-                    //hexa = Integer.parseInt(Integer.toString((int) lumi,16));
                     hexa = (int) lumi;
-                  //  if(Integer.toString((int) lumi,16).length() < 2 ) hexa = Integer.parseInt("0" + hexa);
-
                     color = (hexa & 0xff) << 24 | (hexa & 0xff) << 16 | (hexa & 0xff) << 8 | (hexa & 0xff);
-                //    luminosityHexa =  "0x00" + hexa +  hexa +  hexa;
                     System.out.println("hexa " + color);
                     invalidate();
 
@@ -90,7 +83,6 @@ public class EditorView extends View {
 
             @Override
             public void onAccuracyChanged(Sensor sensor, int accuracy) {
-                //float value = sensorEvent.values[0];
                 System.out.println("lightSensor value " + accuracy);
             }
         };
@@ -110,44 +102,22 @@ public class EditorView extends View {
                      int magField_xResult = (int) (150  + magField_x);
                      int magField_yResult = (int) (150  + magField_y);
                      int magField_zResult = (int) (150  + magField_z);
-                        // float lumi = luminosity;
-                         if (magField_xResult > 255) magField_xResult = 255;
-                         if (magField_xResult < 0) magField_xResult = 0;
+
+                     if (magField_xResult > 255) magField_xResult = 255;
+                     if (magField_xResult < 0) magField_xResult = 0;
                      if (magField_yResult > 255) magField_yResult = 255;
                      if (magField_yResult < 0) magField_yResult = 0;
                      if (magField_zResult > 255) magField_zResult = 255;
                      if (magField_zResult < 0) magField_zResult = 0;
-                         //hexa = Integer.parseInt(Integer.toString((int) lumi,16));
                      hexa1 = (int) magField_xResult;
                      hexa2 = (int) magField_yResult;
                      hexa3 = (int) magField_zResult;
-                         //  if(Integer.toString((int) lumi,16).length() < 2 ) hexa = Integer.parseInt("0" + hexa);
 
                      colorMagnet = (0xff) << 24 | (hexa1 & 0xff) << 16 | (hexa2 & 0xff) << 8 | (hexa3 & 0xff);
-                         //    luminosityHexa =  "0x00" + hexa +  hexa +  hexa;
                          System.out.println("hexa " + color);
                          invalidate();
 
                      }
-              /*  if (luminosity < value - 5 || luminosity > value + 5) {
-
-                    System.out.println("lightSensor value d " + value + " last " + luminosity);
-                    luminosity = value;
-
-                    float lumi = luminosity;
-                    if (lumi > 255) lumi = 255;
-                    if (lumi < 100) lumi = 100;
-
-                    //hexa = Integer.parseInt(Integer.toString((int) lumi,16));
-                    hexa = (int) lumi;
-                    //  if(Integer.toString((int) lumi,16).length() < 2 ) hexa = Integer.parseInt("0" + hexa);
-
-                    color = (hexa & 0xff) << 24 | (hexa & 0xff) << 16 | (hexa & 0xff) << 8 | (hexa & 0xff);
-                    //    luminosityHexa =  "0x00" + hexa +  hexa +  hexa;
-                    System.out.println("hexa " + color);
-                    invalidate();
-
-                }*/
             }
 
             @Override
@@ -158,8 +128,6 @@ public class EditorView extends View {
         };
         sensorManager.registerListener(
                 listener, lightSensor, SensorManager.SENSOR_DELAY_UI);
-       // sensorManager.registerListener(
-        //        listener, mMagneticField, SensorManager.SENSOR_DELAY_UI);
         sensorManager.registerListener(
                 listenerMagnetic, mMagneticField, SensorManager.SENSOR_DELAY_NORMAL);
     }
@@ -193,8 +161,6 @@ public class EditorView extends View {
         // TODO Auto-generated method stub
         super.onDraw(canvas);
 
-       // paint.setAntiAlias(true);
-       // paint.setColor(500);
         canvas.drawBitmap(makeTintedBitmap(bitmap2, color), 0, 0, paint);
         canvas.drawBitmap(bitmap, x, y, null);
     }
