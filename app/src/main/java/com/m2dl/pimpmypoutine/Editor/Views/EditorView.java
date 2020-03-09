@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LightingColorFilter;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -161,7 +162,7 @@ public class EditorView extends View {
         // TODO Auto-generated method stub
         super.onDraw(canvas);
 
-        canvas.drawBitmap(makeTintedBitmap(bitmap2, color), 0, 0, paint);
+        canvas.drawBitmap(makeTintedBitmap(RotateBitmap(bitmap2, 90), color), 0, 0, null);
         canvas.drawBitmap(bitmap, x, y, null);
     }
     public Bitmap makeTintedBitmap(Bitmap src, int color) {
@@ -187,4 +188,11 @@ public class EditorView extends View {
             System.out.println("OUI !!!! ");
         }*/
     }
+    public static Bitmap RotateBitmap(Bitmap source, float angle)
+    {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+    }
+
 }

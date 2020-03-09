@@ -52,7 +52,7 @@ public class ShowPictureActivity extends AppCompatActivity {
                         Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                         Log.d("AndroidCameraApi", myBitmap.getHeight() + " w " + myBitmap.getWidth());
                         //A utiliser si pb d'angle'
-                        imageToValid.setImageBitmap(myBitmap);
+                        imageToValid.setImageBitmap(RotateBitmap(myBitmap,90));
                     }
                 });
             }
