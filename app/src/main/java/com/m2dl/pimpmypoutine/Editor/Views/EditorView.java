@@ -2,6 +2,7 @@ package com.m2dl.pimpmypoutine.Editor.Views;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -18,6 +19,7 @@ import android.hardware.SensorManager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.m2dl.pimpmypoutine.R;
@@ -29,6 +31,10 @@ public class EditorView extends View {
         Bitmap bitmap, bitmap2;
         private String luminosityHexa;
         int hexa, hexa1, hexa2, hexa3 ;
+        private String poutine="";
+    Resources image;
+
+    ImageView imageView;
     int color;
     int colorMagnet = (0xff) << 24 | (0xff) << 16 | (0xff) << 8 | (0xff) ;
     float x = 200;
@@ -59,13 +65,25 @@ View view;
         bitmap2 = BitmapFactory.decodeFile(pimpedPhoto, bmpFactory);
 
         //bitmap = BitmapFactory.decodeFile("./app/res/mipmap-hdpi/ic_launcher.png");
-        bitmap = BitmapFactory.decodeFile(pimpedPhoto);
+      //  bitmap = BitmapFactory.decodeFile(pimpedPhoto);
+       // Drawable d = getResources().getDrawable(R.drawable.ic_launcher_background);
+        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.test);
+       // ImageView imageView = (ImageView) findViewById(R.id.myimageview);
+       // Resources res = getResources();
+      //  Drawable drawable = res.getDrawable(R.drawable.sp, getTheme());        //  bitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_launcher_round);
+        bitmap2 = BitmapFactory.decodeFile(pimpedPhoto, bmpFactory);
+     //  view.measure (MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
+      //  int widht = view.getMeasuredWidth ();
+      //  int height = view.getMeasuredHeight ();
+       // System.out.println("lightSensor value d " + widht);
+      //  bitmap2 = resizeBitmap(bitmap2, widht,height);
+      //  bitmap2.compress(Bitmap.CompressFormat.JPEG,80,);
 
         SensorEventListener listener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
-                System.out.println("lightSensor value d " );
-                System.out.println(" lightSensor alues[0]x " + sensorEvent.values);
+               // System.out.println("lightSensor value d " );
+               // System.out.println(" lightSensor alues[0]x " + sensorEvent.values);
 
                 float value = sensorEvent.values[0];
                 if (luminosity < value - 5 || luminosity > value + 5) {
@@ -162,9 +180,29 @@ View view;
     protected void onDraw(Canvas canvas) {
         // TODO Auto-generated method stub
         super.onDraw(canvas);
+if(poutine.equals("effiloché")) {
+    //bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.ic_launcher_background);
+
+ //   canvas.drawBitmap(bitmap, x, y, null);
+
+}  else if(poutine.equals("fromage")) {
+    //Drawable myDrawable = getResources().getDrawable(R.mipmap.test);
+
+   // imageView.setImageResource(R.drawable.ic_launcher_background);
+    Drawable d = getResources().getDrawable(R.drawable.ic_launcher_background);
+    bitmap = drawableToBitmap(d);
+
+    // bitmap = ((BitmapDrawable)image.getDrawable(0)).getBitmap();
+   // imageView.setImageResource(R.drawable.ic_launcher_background);
+    //this.setDrawingCacheEnabled(true);
+    //bitmap= ((BitmapDrawable) myDrawable).getBitmap();
+    bitmap = drawableToBitmap(d);
+    canvas.drawBitmap(bitmap, x, y, null);
+
+}
+        canvas.drawBitmap(bitmap, x, y, null);
 
         canvas.drawBitmap(makeTintedBitmap(RotateBitmap(bitmap2, 90), color), 0, 0, null);
-        canvas.drawBitmap(bitmap, x, y, null);
     }
     public Bitmap makeTintedBitmap(Bitmap src, int color) {
         Bitmap result = Bitmap.createBitmap(src.getWidth(), src.getHeight(), src.getConfig());
@@ -174,20 +212,11 @@ View view;
         c.drawBitmap(src, 0, 0, paint);
         return result;
     }
-    public void getFiltre (String filtre) {
-       /* switch (filtre) {
-            case "filtre 1":
-                x = event.getX();
-                y = event.getY();
+    public void getPoutine (String poutine) {
+                System.out.println("fromage !!!! ");
+                this.poutine = poutine;
                 invalidate();
-                break;
-            case "filtre 2":
-                x = event.getX();
-                y = event.getY();
-                invalidate();
-                break;
-            System.out.println("OUI !!!! ");
-        }*/
+
     }
     public static Bitmap RotateBitmap(Bitmap source, float angle)
     {
@@ -195,5 +224,27 @@ View view;
         matrix.postRotate(angle);
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
     }
+    public static Bitmap resizeBitmap(Bitmap orig,int newWidth,int newHeight){
+        int width = orig.getWidth();
+        int height = orig.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        Matrix matrix = new Matrix();
+        matrix.postScale(scaleWidth, scaleHeight);
+        Bitmap resizedBitmap = Bitmap.createBitmap(orig, 0, 0,width, height, matrix, true);
+        return resizedBitmap;
+    }
+    public static Bitmap drawableToBitmap (Drawable drawable) {
 
+        if (drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable)drawable).getBitmap();
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
+    }
 }
