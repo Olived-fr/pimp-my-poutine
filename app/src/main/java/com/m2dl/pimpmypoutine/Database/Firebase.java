@@ -11,6 +11,8 @@ import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -47,12 +49,17 @@ public class Firebase {
 
     }
 
-    public void getAllImages(){
-        storageRef.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+    public List<String> getAllImages(){
+
+        final List<String> listUri = new ArrayList<>();
+
+        storageRef.child("/images").listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
             @Override
             public void onSuccess(ListResult result) {
                 for(StorageReference fileRef : result.getItems()) {
                     System.out.println(fileRef);
+                    listUri.add(fileRef.getPath());
+                    fileRef.getMetadata();
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -61,6 +68,8 @@ public class Firebase {
                 exception.printStackTrace();
             }
         });
+
+        return listUri;
     }
 
 }

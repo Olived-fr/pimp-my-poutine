@@ -72,7 +72,5 @@ public class MainActivity extends AppCompatActivity {
                         , 10);
             }
         }
-        Firebase firebase = new Firebase();
-        firebase.getAllImages();
     }
 }
