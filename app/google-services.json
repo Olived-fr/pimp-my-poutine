@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "503944699251",
+    "firebase_url": "https://pimp-my-poutine.firebaseio.com",
+    "project_id": "pimp-my-poutine",
+    "storage_bucket": "pimp-my-poutine.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:503944699251:android:93915128dd60c53c6fb906",
+        "android_client_info": {
+          "package_name": "com.m2dl.pimpmypoutine"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "503944699251-ule4920ola4e3mp9f77mv36u1hc5tttv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVB7MAE2EkuivstL5IHc9P7Q3jBpYoXtc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "503944699251-ule4920ola4e3mp9f77mv36u1hc5tttv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
