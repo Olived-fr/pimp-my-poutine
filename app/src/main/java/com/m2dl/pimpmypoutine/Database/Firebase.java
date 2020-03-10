@@ -1,29 +1,16 @@
 package com.m2dl.pimpmypoutine.Database;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.provider.MediaStore;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.m2dl.pimpmypoutine.R;
-
 import java.io.File;
-import java.io.FileNotFoundException;
+
 
 public class Firebase {
 
@@ -33,14 +20,16 @@ public class Firebase {
     //creating reference to firebase storage
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReferenceFromUrl("gs://pimp-my-poutine.appspot.com");    //change the url according to your firebase app
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
+
+    public Firebase(){
+        mAuth.signInAnonymously();
+    }
 
     public void uploadImage(String path){
 
-
-
         filePath = Uri.fromFile(new File(path));
-
 
         StorageReference childRef = storageRef.child("image.jpg");
 
