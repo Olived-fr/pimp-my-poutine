@@ -5,16 +5,19 @@
     android:layout_height="match_parent"
     tools:context=".Editor.Views.EditorActivity" >
 
-
-<ImageView
-        android:id="@+id/myimageview"
+    <ImageView
+        android:id="@+id/imageView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:onClick="drawSomething"/>
+        android:src="@android:drawable/btn_star_big_on" />
 
-    <View
-        android:id="@+id/viewtest"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <com.m2dl.pimpmypoutine.Editor.Views.EditorView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#BD2121"
+        android:backgroundTint="#781D1D" />
+
+
 
 </RelativeLayout>
