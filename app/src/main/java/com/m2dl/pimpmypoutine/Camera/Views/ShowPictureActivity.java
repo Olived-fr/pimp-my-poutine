@@ -3,6 +3,7 @@ package com.m2dl.pimpmypoutine.Camera.Views;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.m2dl.pimpmypoutine.Camera.Models.PimpedPhoto;
+import com.m2dl.pimpmypoutine.Database.Firebase;
 import com.m2dl.pimpmypoutine.Editor.Views.EditorActivity;
 import com.m2dl.pimpmypoutine.R;
 
@@ -61,6 +62,8 @@ public class ShowPictureActivity extends AppCompatActivity {
         validButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Firebase firebase = new Firebase();
+                firebase.uploadImage(pimpedPhoto);
                 Intent editor = new Intent(ShowPictureActivity.this, EditorActivity.class);
                 editor.putExtra("pathPhoto", pimpedPhoto);
 
