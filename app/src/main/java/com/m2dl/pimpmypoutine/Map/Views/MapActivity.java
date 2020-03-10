@@ -2,12 +2,14 @@ package com.m2dl.pimpmypoutine.Map.Views;
 
 import android.os.Bundle;
 
+import com.m2dl.pimpmypoutine.Database.Firebase;
 import com.m2dl.pimpmypoutine.Map.Api.MapApi;
 import com.m2dl.pimpmypoutine.R;
 
 import org.osmdroid.views.MapView;
 
 import java.io.IOException;
+import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -36,6 +38,8 @@ public class MapActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        Firebase firebase = new Firebase();
+        List<String> stringList = firebase.getAllImages();
         myOpenMapView.invalidate();
 
     }
