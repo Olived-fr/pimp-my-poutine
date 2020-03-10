@@ -10,6 +10,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import java.io.File;
+import java.util.UUID;
 
 
 public class Firebase {
@@ -31,7 +32,7 @@ public class Firebase {
 
         filePath = Uri.fromFile(new File(path));
 
-        StorageReference childRef = storageRef.child("image.jpg");
+        StorageReference childRef = storageRef.child("images/" + UUID.randomUUID().toString());
 
         //uploading the image
         childRef.putFile(filePath)
