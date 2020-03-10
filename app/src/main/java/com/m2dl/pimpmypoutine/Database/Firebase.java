@@ -7,6 +7,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import java.io.File;
@@ -15,12 +16,8 @@ import java.util.UUID;
 
 public class Firebase {
 
-    Uri filePath;
-    ProgressDialog pd;
-
-    //creating reference to firebase storage
     FirebaseStorage storage = FirebaseStorage.getInstance();
-    StorageReference storageRef = storage.getReferenceFromUrl("gs://pimp-my-poutine.appspot.com");    //change the url according to your firebase app
+    StorageReference storageRef = storage.getReferenceFromUrl("gs://pimp-my-poutine.appspot.com");
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
 
@@ -30,16 +27,14 @@ public class Firebase {
 
     public void uploadImage(String path){
 
-        filePath = Uri.fromFile(new File(path));
+        Uri filePath = Uri.fromFile(new File(path));
 
         StorageReference childRef = storageRef.child("images/" + UUID.randomUUID().toString());
 
-        //uploading the image
         childRef.putFile(filePath)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        // Get a URL to the uploaded content
                         String downloadUrl = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
                     }
                 })
@@ -50,6 +45,22 @@ public class Firebase {
                     }
                 });
 
+    }
+
+    public void getAllImages(){
+        storageRef.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+            @Override
+            public void onSuccess(ListResult result) {
+                for(StorageReference fileRef : result.getItems()) {
+                    System.out.println(fileRef);
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(Exception exception) {
+                exception.printStackTrace();
+            }
+        });
     }
 
 }

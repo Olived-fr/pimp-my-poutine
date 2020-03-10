@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.m2dl.pimpmypoutine.Camera.CameraActivity;
+import com.m2dl.pimpmypoutine.Database.Firebase;
 import com.m2dl.pimpmypoutine.Map.Views.MapActivity;
 import com.m2dl.pimpmypoutine.R;
 
@@ -71,5 +72,7 @@ public class MainActivity extends AppCompatActivity {
                         , 10);
             }
         }
+        Firebase firebase = new Firebase();
+        firebase.getAllImages();
     }
 }
