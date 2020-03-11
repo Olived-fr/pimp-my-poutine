@@ -20,6 +20,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme">
         <activity android:name=".Camera.Views.ShowPictureActivity"/>
         <activity android:name=".Editor.Views.EditorActivity"/>
@@ -27,8 +28,21 @@
         <activity android:name=".Camera.Views.CameraActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".Map.Views.MapActivity"
+            android:label="MapActivity"
+            android:parentActivityName=".Home.MainActivity">
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+            android:value=".Home.MainActivity" />
+        </activity>
+        <activity android:name=".Camera.CameraActivity"
+            android:label="CameraActivity"
+            android:parentActivityName=".Home.MainActivity">
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+            android:value=".Home.MainActivity" />
         </activity>
     </application>
 
