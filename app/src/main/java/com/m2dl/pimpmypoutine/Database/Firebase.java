@@ -57,9 +57,11 @@ public class Firebase {
             @Override
             public void onSuccess(ListResult result) {
                 for(StorageReference fileRef : result.getItems()) {
-                    System.out.println(fileRef);
-                    listUri.add(fileRef.getPath());
-                    fileRef.getMetadata();
+
+                    Uri uri = Uri.parse("./");
+                    fileRef.getFile(uri);
+                    listUri.add("./"+fileRef.getName());
+                    System.out.println(fileRef.getName());
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
