@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
+import com.m2dl.pimpmypoutine.Camera.Views.ShowPictureActivity;
+import com.m2dl.pimpmypoutine.Home.MainActivity;
 import com.m2dl.pimpmypoutine.R;
 
 import java.io.File;
@@ -78,7 +80,8 @@ private EditorView viewtest;
                 }
                 viewtest.validImage().compress(Bitmap.CompressFormat.PNG, 100, fOut);
 
-               ;
+                Intent mainActivity = new Intent(EditorActivity.this, MainActivity.class);
+                startActivity(mainActivity);
             }
         });
     }

@@ -27,6 +27,8 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme">
         <activity android:name=".Editor.Views.EditorActivity"/>
+        <activity android:name=".Camera.Views.CameraActivity"/>
+        <activity android:name=".Camera.Views.ShowPictureActivity"/>
 
         <activity android:name=".Home.MainActivity">
             <intent-filter>
@@ -36,12 +38,6 @@
         </activity>
         <activity android:name=".Map.Views.MapActivity"
             android:label="MapActivity"
-            android:parentActivityName=".Home.MainActivity">
-            <meta-data android:name="android.support.PARENT_ACTIVITY"
-            android:value=".Home.MainActivity" />
-        </activity>
-        <activity android:name=".Camera.CameraActivity"
-            android:label="CameraActivity"
             android:parentActivityName=".Home.MainActivity">
             <meta-data android:name="android.support.PARENT_ACTIVITY"
             android:value=".Home.MainActivity" />
