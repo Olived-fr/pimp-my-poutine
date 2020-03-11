@@ -28,10 +28,18 @@ import static android.content.Context.SENSOR_SERVICE;
 import static com.m2dl.pimpmypoutine.Editor.Views.EditorActivity.pimpedPhoto;
 
 public class EditorView extends View {
-        Bitmap bitmap, bitmap2;
+        Bitmap bitmap, bitmap2, bitmap3;
         private String luminosityHexa;
+    private Integer poutineClick1 = 0;
+    private Integer poutineClick2 = 0;
+    private float coordPoutine2x, coordPoutine2y, coordPoutine1x, coordPoutine1y;
         int hexa, hexa1, hexa2, hexa3 ;
-        private String poutine="";
+    private String poutine1="";
+    private String poutine2="";
+    private Integer isPoutine = 0;
+private Integer isPoutinetest =0;
+    private String priority = "";
+    private String priorityg = "";
     Resources image;
 
     ImageView imageView;
@@ -67,8 +75,11 @@ View view;
         //bitmap = BitmapFactory.decodeFile("./app/res/mipmap-hdpi/ic_launcher.png");
       //  bitmap = BitmapFactory.decodeFile(pimpedPhoto);
        // Drawable d = getResources().getDrawable(R.drawable.ic_launcher_background);
-        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.test);
+    //    bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.);
        // ImageView imageView = (ImageView) findViewById(R.id.myimageview);
+        Drawable dr = getResources().getDrawable(R.drawable.test2);
+        //On transforme l'objet Drawable en Bitmap pour redéfinir sa taille
+        bitmap = ((BitmapDrawable) dr).getBitmap();
        // Resources res = getResources();
       //  Drawable drawable = res.getDrawable(R.drawable.sp, getTheme());        //  bitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_launcher_round);
         bitmap2 = BitmapFactory.decodeFile(pimpedPhoto, bmpFactory);
@@ -180,29 +191,82 @@ View view;
     protected void onDraw(Canvas canvas) {
         // TODO Auto-generated method stub
         super.onDraw(canvas);
-if(poutine.equals("effiloché")) {
-    //bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.ic_launcher_background);
-
- //   canvas.drawBitmap(bitmap, x, y, null);
-
-}  else if(poutine.equals("fromage")) {
-    //Drawable myDrawable = getResources().getDrawable(R.mipmap.test);
-
-   // imageView.setImageResource(R.drawable.ic_launcher_background);
-    Drawable d = getResources().getDrawable(R.drawable.ic_launcher_background);
-    bitmap = drawableToBitmap(d);
-
-    // bitmap = ((BitmapDrawable)image.getDrawable(0)).getBitmap();
-   // imageView.setImageResource(R.drawable.ic_launcher_background);
-    //this.setDrawingCacheEnabled(true);
-    //bitmap= ((BitmapDrawable) myDrawable).getBitmap();
-    bitmap = drawableToBitmap(d);
-    canvas.drawBitmap(bitmap, x, y, null);
-
-}
-        canvas.drawBitmap(bitmap, x, y, null);
-
         canvas.drawBitmap(makeTintedBitmap(RotateBitmap(bitmap2, 90), color), 0, 0, null);
+
+        if(poutine1.equals("fromage")) {
+            //Drawable myDrawable = getResources().getDrawable(R.mipmap.test);
+            System.out.println("fromage ");
+
+
+            // imageView.setImageResource(R.drawable.ic_launcher_background);
+            Drawable d = getResources().getDrawable(R.drawable.poutine2t);
+            bitmap = drawableToBitmap(d);
+
+            // bitmap = ((BitmapDrawable)image.getDrawable(0)).getBitmap();
+            // imageView.setImageResource(R.drawable.ic_launcher_background);
+            //this.setDrawingCacheEnabled(true);
+            //bitmap= ((BitmapDrawable) myDrawable).getBitmap();
+            System.out.println("tpriority.equals(\"fromage\")   " + priorityg + " "+ priorityg.equals("fromage"));
+            System.out.println("PRIORITY +" +  priorityg);
+
+            if (poutineClick1 == 1 && priorityg.equals("fromage")) {
+                System.out.println("poutineClick1isPoutine " + isPoutine);
+
+                if(priority.equals("fromage") && isPoutine == 1) {
+                    System.out.println("pisPoutine1 isPoutine " + isPoutine);
+
+                    x = coordPoutine1x;
+                    y = coordPoutine1y;
+                    isPoutinetest = 1;
+                    priority = "";
+                }
+                canvas.drawBitmap(bitmap, x, y, null);
+                coordPoutine1x = x;
+                coordPoutine1y = y;
+            } else if (poutineClick1 != 10) {
+                System.out.println("poutineClick1 != 10 " + isPoutine);
+
+                canvas.drawBitmap(bitmap, coordPoutine1x, coordPoutine1y, null);
+
+            }
+
+        }
+
+
+        if(poutine2.equals("effiloché")) {
+    System.out.println("effiloché");
+
+
+    Drawable dr = getResources().getDrawable(R.drawable.poutine1t);
+    //On transforme l'objet Drawable en Bitmap pour redéfinir sa taille
+    bitmap3 = ((BitmapDrawable) dr).getBitmap();
+            System.out.println("tpriority.equals(\"effiloché\")   " + priorityg.equals("effiloché"));
+
+            if (poutineClick2 == 2 && priorityg.equals("effiloché")) {
+                System.out.println("poutineClick2 isPoutine " + isPoutine);
+
+                if(priority.equals("effiloché") && isPoutine == 2) {
+                    System.out.println("pisPoutine2 isPoutine " + isPoutine);
+
+                    x = coordPoutine2x;
+                    y = coordPoutine2y;
+                    isPoutinetest = 2;
+                    priority = "";
+
+                }
+                canvas.drawBitmap(bitmap3, x, y, null);
+                coordPoutine2x = x;
+                coordPoutine2y = y;
+            } else if (poutineClick2 != 20){
+                System.out.println("ppoutineClick2 != 20 " + isPoutine);
+
+                canvas.drawBitmap(bitmap3, coordPoutine2x, coordPoutine2y, null);
+
+            }
+}
+
+   //     canvas.drawBitmap(bitmap, x, y, null);
+
     }
     public Bitmap makeTintedBitmap(Bitmap src, int color) {
         Bitmap result = Bitmap.createBitmap(src.getWidth(), src.getHeight(), src.getConfig());
@@ -214,7 +278,49 @@ if(poutine.equals("effiloché")) {
     }
     public void getPoutine (String poutine) {
                 System.out.println("fromage !!!! ");
-                this.poutine = poutine;
+        if(poutine.equals("fromage"))  {
+            if(this.poutine1.equals("fromage")) {
+                this.poutine1 = "";
+                System.out.println("this.poutine2   " + this.poutine2);
+
+                if(this.poutine2.equals("effiloché")) {
+                    priorityg =this.poutine2;
+                   poutineClick2 = 2;
+                    //else poutineClick2=2;
+                }
+                }
+            else {
+                this.poutine1 = poutine;
+                    priorityg = "fromage";
+
+                }
+            if (poutineClick1 == 1) poutineClick1 = 10;
+            else poutineClick1=1;
+            if (isPoutinetest == 2 || isPoutinetest == 0) isPoutine = 1;
+            priority = this.poutine1 ;
+
+        }
+        if(poutine.equals("effiloché")) {
+            if(this.poutine2.equals("effiloché")) {
+                this.poutine2 = "";
+                System.out.println("this.poutine1   " + this.poutine1);
+                if (this.poutine1.equals("fromage")) {
+                    priorityg ="fromage";
+                    poutineClick1 = 1;
+                }
+            }
+            else {
+                this.poutine2 = poutine;
+                priorityg = "effiloché";
+            }
+            if (poutineClick2 == 2) poutineClick2 = 20;
+            else poutineClick2=2;
+            if (isPoutinetest == 1 || isPoutinetest == 0) isPoutine = 2;
+            priority = this.poutine2;
+        //    priorityg = this.poutine2;
+
+
+        }
                 invalidate();
 
     }
