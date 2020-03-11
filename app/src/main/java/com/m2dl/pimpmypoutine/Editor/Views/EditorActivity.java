@@ -18,6 +18,7 @@ import android.widget.ImageButton;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.m2dl.pimpmypoutine.Camera.Views.ShowPictureActivity;
+import com.m2dl.pimpmypoutine.Database.Firebase;
 import com.m2dl.pimpmypoutine.Home.MainActivity;
 import com.m2dl.pimpmypoutine.R;
 
@@ -117,6 +118,9 @@ public class EditorActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                Firebase firebase = new Firebase();
+                firebase.uploadImage(f.getPath());
+
 
                 Intent mainActivity = new Intent(EditorActivity.this, MainActivity.class);
                 startActivity(mainActivity);

@@ -62,8 +62,7 @@ public class ShowPictureActivity extends AppCompatActivity {
         validButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Firebase firebase = new Firebase();
-                firebase.uploadImage(pimpedPhoto);
+
                 Intent editor = new Intent(ShowPictureActivity.this, EditorActivity.class);
                 editor.putExtra("pathPhoto", pimpedPhoto);
 
