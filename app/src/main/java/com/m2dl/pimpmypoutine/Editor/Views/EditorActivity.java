@@ -7,7 +7,7 @@ import android.graphics.Bitmap;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.media.ExifInterface;
+import androidx.exifinterface.media.ExifInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -25,11 +25,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Objects;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static androidx.exifinterface.media.ExifInterface.TAG_GPS_LATITUDE_REF;
+import static androidx.exifinterface.media.ExifInterface.TAG_GPS_LONGITUDE_REF;
 
 
 public class EditorActivity extends AppCompatActivity {
@@ -90,42 +93,27 @@ public class EditorActivity extends AppCompatActivity {
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
-                viewtest.validImage().compress(Bitmap.CompressFormat.PNG, 100, fOut);
-              /*  ExifInterface exif = null;
-                try {
-                    exif = new ExifInterface(f.getPath());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, String.valueOf(latLng.latitude));
-                exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, String.valueOf(latLng.longitude));
-*/
-                LatLng latLng = getLocation();
+                viewtest.validImage().compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+
+                Location location = getLocation();
+                System.out.println("getLatitude " + location.getLatitude());
+                System.out.println("getLongitude " + location.getLongitude());
+                System.out.println("getPath " + f.getPath());
+                System.out.println("getAbsolutePath " + f.getAbsolutePath());
 
                 ExifInterface exif = null;
+                ExifInterface exif2 = null;
                 try {
                     exif = new ExifInterface(f.getPath());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, GPS.convert(latLng.latitude));
-                exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, GPS.latitudeRef(latLng.latitude));
-                exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, GPS.convert(latLng.longitude));
-                exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, GPS.longitudeRef(latLng.longitude));
-                try {
+                    exif.setGpsInfo(location);
                     exif.saveAttributes();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    exif.saveAttributes();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    ExifInterface exif2 = new ExifInterface(f.getPath());
-                    Log.e("LATITUDE EXTRACTED", Objects.requireNonNull(exif2.getAttribute(ExifInterface.TAG_GPS_LATITUDE)));
-                    Log.e("LONGITUDE EXTRACTED", Objects.requireNonNull(exif2.getAttribute(ExifInterface.TAG_GPS_LONGITUDE)));
+                  /* System.out.println("getAbsolutePath " + exif.getLatLong().toString());
+                    Float latlong = new Float();
+                    System.out.println("getAbsolutePath " + exif.getLatLong());*/
+                    Log.e("LATITUDE EXTRACTED", String.valueOf(exif.getLatLong()[0]));
+                    Log.e("LATITUDE EXTRACTED", String.valueOf(exif.getLatLong()[1]));
+                    //Log.e("LONGITUDE EXTRACTED", Arrays.toString(exif.getAttributeRange(ExifInterface.TAG_GPS_LATITUDE)));
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -136,7 +124,7 @@ public class EditorActivity extends AppCompatActivity {
         });
     }
 
-    public LatLng getLocation ()
+    public Location getLocation ()
     {
         // Get the location manager
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -158,13 +146,11 @@ public class EditorActivity extends AppCompatActivity {
         Double lat,lon;
         try {
             lat = location.getLatitude ();
-            // latitudeGPS = location.getLatitude ();
             lon = location.getLongitude ();
-            // longitudeGPS = location.getLongitude ();
             System.out.println("location.getLongitude()" + location.getLongitude());
             System.out.println("location.getLongitude()" + location.getLatitude());
 
-            return new LatLng(lat, lon);
+            return location;
         }
         catch (NullPointerException e){
             e.printStackTrace();
