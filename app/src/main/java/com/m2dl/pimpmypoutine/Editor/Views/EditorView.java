@@ -77,9 +77,9 @@ View view;
        // Drawable d = getResources().getDrawable(R.drawable.ic_launcher_background);
     //    bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.);
        // ImageView imageView = (ImageView) findViewById(R.id.myimageview);
-        Drawable dr = getResources().getDrawable(R.drawable.test2);
+       // Drawable dr = getResources().getDrawable(R.drawable.test2);
         //On transforme l'objet Drawable en Bitmap pour redéfinir sa taille
-        bitmap = ((BitmapDrawable) dr).getBitmap();
+      //  bitmap = ((BitmapDrawable) dr).getBitmap();
        // Resources res = getResources();
       //  Drawable drawable = res.getDrawable(R.drawable.sp, getTheme());        //  bitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_launcher_round);
         bitmap2 = BitmapFactory.decodeFile(pimpedPhoto, bmpFactory);
