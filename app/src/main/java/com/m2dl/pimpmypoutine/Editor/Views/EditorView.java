@@ -89,7 +89,8 @@ View view;
        // System.out.println("lightSensor value d " + widht);
       //  bitmap2 = resizeBitmap(bitmap2, widht,height);
       //  bitmap2.compress(Bitmap.CompressFormat.JPEG,80,);
-
+     //   Canvas canvas = new Canvas(bitmap);
+//this.draw(canvas);
         SensorEventListener listener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
@@ -192,7 +193,7 @@ View view;
         // TODO Auto-generated method stub
         super.onDraw(canvas);
         canvas.drawBitmap(makeTintedBitmap(RotateBitmap(bitmap2, 90), color), 0, 0, null);
-
+//canvas.setBitmap(makeTintedBitmap(RotateBitmap(bitmap2, 90), color));
         if(poutine1.equals("fromage")) {
             //Drawable myDrawable = getResources().getDrawable(R.mipmap.test);
             System.out.println("fromage ");
@@ -261,11 +262,12 @@ View view;
                 System.out.println("ppoutineClick2 != 20 " + isPoutine);
 
                 canvas.drawBitmap(bitmap3, coordPoutine2x, coordPoutine2y, null);
-
-            }
+//Canvas can = new Canvas(canvas.);
 }
+}    //    return bitmap = Bitmap.createBitmap(canvas.);
 
-   //     canvas.drawBitmap(bitmap, x, y, null);
+
+        //     canvas.drawBitmap(bitmap, x, y, null);
 
     }
     public Bitmap makeTintedBitmap(Bitmap src, int color) {
@@ -352,5 +354,15 @@ View view;
         drawable.draw(canvas);
 
         return bitmap;
+    }
+
+    public Bitmap validImage() {
+        //Firebase
+        this.layout(0, 0, this.getMeasuredWidth(), this.getMeasuredHeight());
+        this.setDrawingCacheEnabled(true);
+        this.buildDrawingCache(true);
+        Bitmap bitmap5 = Bitmap.createBitmap(this.getDrawingCache());
+        this.setDrawingCacheEnabled(false);
+return bitmap5;
     }
 }
