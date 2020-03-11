@@ -142,6 +142,23 @@ public class MapApi {
         //initialisation de la liste de markerIcone
     }
 
+    public List<DataPicture> getDataPicture(List<String> uriList) {
+        List<DataPicture> dataPictureList = new ArrayList<>();
+        double lat = 43;
+        double lng = 0;
+        for (String uri : uriList) {
+            DataPicture dataPicture = new DataPicture();
+            dataPicture.setUrl(uri);
+            dataPicture.setLongitude(lng);
+            dataPicture.setLatitude(lat);
+            dataPictureList.add(dataPicture);
+            lng++;
+            lat++;
+        }
+
+        return dataPictureList;
+    }
+
     public List<MarkerIcon> addMarkers(MapView myOpenMapView, Resources resources, List<DataPicture> pictures) throws IOException {
 
         List<MarkerIcon> markerIcons = new ArrayList<>();
@@ -154,8 +171,9 @@ public class MapApi {
             marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
 
             //On défini l'image du marker
-            URL url = new URL(picture.getUrl());
-            Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+            //URL url = new URL(picture.getUrl());
+            //Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+            Bitmap bmp = BitmapFactory.decodeFile(picture.getUrl());
             Drawable image = new BitmapDrawable(resources, bmp);
             marker.setImage(image);
 

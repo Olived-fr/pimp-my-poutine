@@ -4,11 +4,13 @@ import android.os.Bundle;
 
 import com.m2dl.pimpmypoutine.Database.Firebase;
 import com.m2dl.pimpmypoutine.Map.Api.MapApi;
+import com.m2dl.pimpmypoutine.Map.Bean.DataPicture;
 import com.m2dl.pimpmypoutine.R;
 
 import org.osmdroid.views.MapView;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,7 +27,6 @@ public class MapActivity extends AppCompatActivity {
         setContentView(R.layout.activity_map);
         System.out.println("Démarrage de l'activité map");
         myOpenMapView = findViewById(R.id.mapview);
-
         mapApi.initMap(myOpenMapView);
         mapApi.addScale(myOpenMapView);
         mapApi.addCompass(myOpenMapView, getApplicationContext());
@@ -33,13 +34,17 @@ public class MapActivity extends AppCompatActivity {
 
         //ajout d'un marker
         try {
+            ArrayList<String> myList = (ArrayList<String>) getIntent().getSerializableExtra("mylist");
+
+            List<DataPicture> dataPictureList = mapApi.getDataPicture(myList);
+            mapApi.addMarkers(myOpenMapView, getResources(), dataPictureList);
             mapApi.addMarker(myOpenMapView, getResources());
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         Firebase firebase = new Firebase();
-        List<String> stringList = firebase.getAllImages();
+        //List<String> stringList = firebase.getAllImages();
         myOpenMapView.invalidate();
 
     }

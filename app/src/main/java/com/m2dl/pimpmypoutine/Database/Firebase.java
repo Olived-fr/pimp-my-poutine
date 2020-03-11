@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
@@ -21,10 +22,15 @@ public class Firebase {
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReferenceFromUrl("gs://pimp-my-poutine.appspot.com");
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private ArrayList<String> uriList;
 
-
-    public Firebase(){
+    public Firebase() {
+        uriList = new ArrayList<>();
         mAuth.signInAnonymously();
+    }
+
+    public ArrayList<String> getUriList() {
+        return uriList;
     }
 
     public void uploadImage(String path){
@@ -49,7 +55,7 @@ public class Firebase {
 
     }
 
-    public List<String> getAllImages(){
+    public List<String> getAllImages(final String path){
 
         final List<String> listUri = new ArrayList<>();
 
@@ -58,10 +64,10 @@ public class Firebase {
             public void onSuccess(ListResult result) {
                 for(StorageReference fileRef : result.getItems()) {
 
-                    Uri uri = Uri.parse("./");
-                    fileRef.getFile(uri);
-                    listUri.add("./"+fileRef.getName());
-                    System.out.println(fileRef.getName());
+                    Uri uri = Uri.parse(path);
+                    fileRef.getFile(new File("/storage/emulated/0/"+fileRef.getName()));
+                    uriList.add("/storage/emulated/0/"+fileRef.getName());
+                    System.out.println("/storage/emulated/0/"+fileRef.getName());
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {

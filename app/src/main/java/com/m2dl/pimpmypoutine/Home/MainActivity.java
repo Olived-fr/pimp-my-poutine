@@ -16,6 +16,8 @@ import com.m2dl.pimpmypoutine.Database.Firebase;
 import com.m2dl.pimpmypoutine.Map.Views.MapActivity;
 import com.m2dl.pimpmypoutine.R;
 
+import java.util.ArrayList;
+
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class MainActivity extends AppCompatActivity {
@@ -50,8 +52,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        Firebase firebase = new Firebase();
-        firebase.getAllImages();
+        final Firebase firebase = new Firebase();
+        firebase.getAllImages(getCacheDir().getPath());
 
        //Configuration du bouton pour acceder à la carte
         Button openMap = findViewById(R.id.openMap);
@@ -59,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent mapActivity = new Intent(getBaseContext(), MapActivity.class);
+                ArrayList<String> list = firebase.getUriList();
+                mapActivity.putExtra("mylist", list);
                 startActivity(mapActivity);
             }
         });
