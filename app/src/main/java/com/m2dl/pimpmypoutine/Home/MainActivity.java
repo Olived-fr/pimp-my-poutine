@@ -11,7 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.m2dl.pimpmypoutine.Camera.CameraActivity;
+import com.m2dl.pimpmypoutine.Camera.Views.CameraActivity;
 import com.m2dl.pimpmypoutine.Database.Firebase;
 import com.m2dl.pimpmypoutine.Map.Views.MapActivity;
 import com.m2dl.pimpmypoutine.R;
@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
         openMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 Intent mapActivity = new Intent(getBaseContext(), MapActivity.class);
                 startActivity(mapActivity);
             }
@@ -41,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
         openCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 Intent cameraActivity = new Intent(getBaseContext(), CameraActivity.class);
                 startActivity(cameraActivity);
             }

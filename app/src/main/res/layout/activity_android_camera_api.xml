@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:id="@+id/relativeLayoutPhoto"
-    tools:context="com.m2dl.pimpmypoutine.Camera.Api.AndroidCameraApi">
+    tools:context="com.m2dl.pimpmypoutine.Camera.Views.CameraActivity">
     <TextureView
         android:id="@+id/texture"
         android:layout_width="match_parent"
