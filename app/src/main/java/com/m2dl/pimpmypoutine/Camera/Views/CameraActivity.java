@@ -29,6 +29,7 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
@@ -50,18 +51,17 @@ import androidx.core.app.ActivityCompat;
 import com.m2dl.pimpmypoutine.R;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static android.Manifest.permission.CAMERA;
 
 public class CameraActivity extends AppCompatActivity {
     private static final String TAG = "AndroidCameraApi";
     private Button takePictureButton;
     private RelativeLayout relativeLayoutPhoto;
     private TextureView textureView;
-    private ImageButton imageButton;
     private String frontback= "0";
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
     public static final String CAMERA_FRONT = "1";
     public static final String CAMERA_BACK = "0";
+    private Switch switch2;
     static {
         ORIENTATIONS.append(Surface.ROTATION_0, 90);
         ORIENTATIONS.append(Surface.ROTATION_90, 0);
@@ -88,7 +88,7 @@ public class CameraActivity extends AppCompatActivity {
         textureView.setSurfaceTextureListener(textureListener);
         takePictureButton = findViewById(R.id.btn_takepicture);
         relativeLayoutPhoto = findViewById(R.id.relativeLayoutPhoto);
-        imageButton = findViewById(R.id.imageButton1);
+        switch2 = findViewById(R.id.switch2);
 
         assert takePictureButton != null;
 
@@ -102,7 +102,6 @@ public class CameraActivity extends AppCompatActivity {
             }
             return;
         }
-
         takePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,18 +109,14 @@ public class CameraActivity extends AppCompatActivity {
 
             }
         });
-        imageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-              /*  if (frontback == 0) {
-                    frontback = 1;
-                } else {
-                    frontback = 0;
-                }*/
-                //openCamera();
+
+        switch2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+               // switch2.setChecked(!isChecked);
                 switchCamera();
             }
         });
+
     }
 
     TextureView.SurfaceTextureListener textureListener = new TextureView.SurfaceTextureListener() {
@@ -409,13 +404,10 @@ public class CameraActivity extends AppCompatActivity {
             frontback = CAMERA_BACK;
             closeCamera();
             reopenCamera();
-            imageButton.setImageResource(R.drawable.ic_menu_compass);
-
         } else if (frontback.equals(CAMERA_BACK)) {
             frontback = CAMERA_FRONT;
             closeCamera();
             reopenCamera();
-            imageButton.setImageResource(R.drawable.ic_menu_mylocation);
         }
     }
 

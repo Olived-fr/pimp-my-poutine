@@ -30,6 +30,7 @@
         <activity android:name=".Camera.Views.ShowPictureActivity"/>
         <activity android:name=".Editor.Views.EditorActivity"/>
         <activity android:name=".Database.Firebase"/>
+        <activity android:name=".Camera.Views.CameraActivity"/>
         <activity android:name=".Home.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -52,8 +52,6 @@ public class EditorView extends View {
 
     public EditorView(Context context, AttributeSet attrs ) {
         super(context, attrs);
-
-
         File file = new File(pimpedPhoto);
         sensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
