@@ -17,6 +17,7 @@ import android.hardware.SensorManager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageButton;
 
 import com.m2dl.pimpmypoutine.R;
 
@@ -49,7 +50,6 @@ public class EditorView extends View {
     private SensorManager sensorManager;
     private Sensor lightSensor;
     private Sensor mMagneticField;
-
     public EditorView(Context context, AttributeSet attrs ) {
         super(context, attrs);
         File file = new File(pimpedPhoto);

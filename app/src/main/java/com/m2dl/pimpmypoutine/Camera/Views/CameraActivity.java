@@ -54,14 +54,14 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class CameraActivity extends AppCompatActivity {
     private static final String TAG = "AndroidCameraApi";
-    private Button takePictureButton;
+    private ImageButton takePictureButton;
     private RelativeLayout relativeLayoutPhoto;
     private TextureView textureView;
     private String frontback= "0";
+    private ImageButton imageButton;
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
     public static final String CAMERA_FRONT = "1";
     public static final String CAMERA_BACK = "0";
-    private Switch switch2;
     static {
         ORIENTATIONS.append(Surface.ROTATION_0, 90);
         ORIENTATIONS.append(Surface.ROTATION_90, 0);
@@ -88,7 +88,7 @@ public class CameraActivity extends AppCompatActivity {
         textureView.setSurfaceTextureListener(textureListener);
         takePictureButton = findViewById(R.id.btn_takepicture);
         relativeLayoutPhoto = findViewById(R.id.relativeLayoutPhoto);
-        switch2 = findViewById(R.id.switch2);
+        imageButton = findViewById(R.id.imageButton);
 
         assert takePictureButton != null;
 
@@ -110,13 +110,13 @@ public class CameraActivity extends AppCompatActivity {
             }
         });
 
-        switch2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-               // switch2.setChecked(!isChecked);
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 switchCamera();
+
             }
         });
-
     }
 
     TextureView.SurfaceTextureListener textureListener = new TextureView.SurfaceTextureListener() {
