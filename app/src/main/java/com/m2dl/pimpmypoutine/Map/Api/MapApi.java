@@ -3,9 +3,9 @@ package com.m2dl.pimpmypoutine.Map.Api;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.widget.ImageView;
 
 import com.m2dl.pimpmypoutine.Map.Bean.DataPicture;
 import com.m2dl.pimpmypoutine.Map.Bean.MarkerIcon;
@@ -23,22 +23,9 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
-import androidx.exifinterface.media.ExifInterface;
 
 public class MapApi {
-    private List<MarkerIcon> markerIconList = new ArrayList<>();
-
-    public void addMarkerIcon(MarkerIcon markerIcon) {
-        if (markerIconList == null) {
-            markerIconList = new ArrayList<>();
-        }
-        markerIconList.add(markerIcon);
-    }
 
     public void initMap(MapView myOpenMapView) {
         myOpenMapView.setBuiltInZoomControls(true);
@@ -75,13 +62,13 @@ public class MapApi {
                 Drawable image = markerIcon.getDrawable();
                 Bitmap bitmap = ((BitmapDrawable) image).getBitmap();
                 Drawable drawable;
-                if (marker.getInfoWindow().isOpen()) {
 
+                if (marker.getInfoWindow().isOpen()) {
                     drawable = new BitmapDrawable(resources, Bitmap.createScaledBitmap(bitmap, 50, 50, true));
                     marker.setIcon(drawable);
                     marker.closeInfoWindow();
-                } else {
 
+                } else {
                     drawable = new BitmapDrawable(resources, Bitmap.createScaledBitmap(bitmap, 100, 100, true));
                     marker.setIcon(drawable);
                     marker.showInfoWindow();
@@ -92,67 +79,6 @@ public class MapApi {
                 return true;
             }
         });
-    }
-
-    public List<DataPicture> getDataPicture(List<String> uriList) {
-        List<DataPicture> dataPictureList = new ArrayList<>();
-        for (String uri : uriList) {
-
-            try {
-                ExifInterface exif = new ExifInterface(uri);
-                System.out.println("//////////////////////////////"+uri);
-                double lat = exif.getLatLong()[0];
-                double lng = exif.getLatLong()[1];
-                DataPicture dataPicture = new DataPicture();
-                dataPicture.setUrl(uri);
-                dataPicture.setLongitude(lng);
-                dataPicture.setLatitude(lat);
-                dataPictureList.add(dataPicture);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return dataPictureList;
-    }
-
-    public List<MarkerIcon> addMarkers(MapView myOpenMapView, Resources resources, List<DataPicture> pictures) throws IOException {
-
-        List<MarkerIcon> markerIcons = new ArrayList<>();
-
-        for(DataPicture picture : pictures) {
-            Marker marker = new Marker(myOpenMapView);
-
-            //On défini la position du marker
-            marker.setPosition(new GeoPoint(picture.getLatitude(), picture.getLongitude()));
-            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-
-            //On défini l'image du marker
-            Bitmap bmp = BitmapFactory.decodeFile(picture.getUrl());
-            Drawable image = new BitmapDrawable(resources, bmp);
-            marker.setImage(image);
-
-            //On défini l'icone du marker
-            Drawable dr = resources.getDrawable(R.drawable.maps_marker_black_icon);
-            //On transforme l'objet Drawable en Bitmap pour redéfinir sa taille
-            Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
-            Drawable icone = new BitmapDrawable(resources, Bitmap.createScaledBitmap(bitmap, 50, 50, true));
-            marker.setIcon(icone);
-
-            MarkerIcon markerIcon = new MarkerIcon();
-            markerIcon.setDrawable(icone);
-
-            setClick(myOpenMapView, marker, markerIcon, resources);
-            myOpenMapView.getOverlays().add(marker);
-
-            markerIcon.setMarker(marker);
-            addMarkerIcon(markerIcon);
-
-            markerIcons.add(markerIcon);
-        }
-        
-        return markerIcons;
     }
 
     public void addMarker( DataPicture dataPicture, File image, MapView myOpenMapView, Resources resources) {
@@ -168,7 +94,6 @@ public class MapApi {
         Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
         Drawable icon = new BitmapDrawable(resources, Bitmap.createScaledBitmap(bitmap, 50, 50, true));
         marker.setIcon(icon);
-
         InputStream targetStream = null;
 
         try {
@@ -182,5 +107,6 @@ public class MapApi {
 
         //ajout du marker sur la map
         myOpenMapView.getOverlays().add(marker);
+
     }
 }

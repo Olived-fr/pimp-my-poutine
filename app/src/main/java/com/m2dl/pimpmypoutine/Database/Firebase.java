@@ -1,17 +1,22 @@
 package com.m2dl.pimpmypoutine.Database;
 
+import android.content.res.Resources;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
+import androidx.exifinterface.media.ExifInterface;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.m2dl.pimpmypoutine.Map.Api.MapApi;
+import com.m2dl.pimpmypoutine.Map.Bean.DataPicture;
 
 import org.osmdroid.views.MapView;
 
@@ -57,33 +62,70 @@ public class Firebase {
                 });
     }
 
-    public List<String> getAllImages(final String path) {
+    public void firebaseRequest(MapApi mapApi, MapView myOpenMapView, Resources resources) {
 
-        final List<String> listUri = new ArrayList<>();
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuth.signInAnonymously().addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+            @Override
+            public void onSuccess(AuthResult authResult) {
+                try {
+                    getAllImages(mapApi, myOpenMapView, resources);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public void getAllImages(MapApi mapApi, MapView myOpenMapView, Resources resources) throws IOException {
+
+        File localFile = File.createTempFile("test", ".jpeg");
 
         storageRef.child("/images").listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
             @Override
-            public void onSuccess(ListResult result) {
-                for (StorageReference fileRef : result.getItems()) {
-                    String uri = path + fileRef.getName() + ".jpg";
-                    File newFile = new File(uri);
-                    try {
-                        newFile.createNewFile();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    uriList.add(uri);
-                    System.out.println(uri);
+            public void onSuccess(ListResult listResult) {
+
+                for (StorageReference fileRef : listResult.getItems()) {
+
+                    fileRef.getFile(localFile)
+                            .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+
+                            String uri = localFile.getAbsolutePath();
+                            ExifInterface exif = null;
+                            try {
+                                exif = new ExifInterface(uri);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            System.out.println("::::::::::::::::::::::::::::::::::::::::::::::::"+fileRef.getName()+"::::::::::::::::::::::::::::::::::");
+                            System.out.println("/////////////////"+uri+"////////////"+exif.getLatLong()+"//////////////");
+                            double lat = 0;
+                            double lng = 0;
+
+                            if (exif.getLatLong() != null) {
+                                lat = exif.getLatLong()[0];
+                                lng = exif.getLatLong()[1];
+                                DataPicture dataPicture = new DataPicture();
+                                dataPicture.setLatitude(lat);
+                                dataPicture.setLongitude(lng);
+                                dataPicture.setFile(localFile);
+
+                                mapApi.addMarker(dataPicture, localFile, myOpenMapView, resources);
+                                myOpenMapView.invalidate();
+                            }
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            exception.printStackTrace();
+                        }
+                    });
                 }
             }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(Exception exception) {
-                exception.printStackTrace();
-            }
         });
-
-        return listUri;
     }
 
 }
