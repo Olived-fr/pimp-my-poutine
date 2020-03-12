@@ -12,11 +12,8 @@ import android.view.View;
 import android.widget.Button;
 
 import com.m2dl.pimpmypoutine.Camera.Views.CameraActivity;
-import com.m2dl.pimpmypoutine.Database.Firebase;
 import com.m2dl.pimpmypoutine.Map.Views.MapActivity;
 import com.m2dl.pimpmypoutine.R;
-
-import java.util.ArrayList;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
@@ -52,17 +49,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        //final Firebase firebase = new Firebase();
-        //firebase.getAllImages(getExternalCacheDir().getPath());
-
        //Configuration du bouton pour acceder à la carte
         Button openMap = findViewById(R.id.openMap);
         openMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent mapActivity = new Intent(getBaseContext(), MapActivity.class);
-                //ArrayList<String> list = firebase.getUriList();
-                //mapActivity.putExtra("mylist", list);
                 startActivity(mapActivity);
             }
         });
@@ -76,7 +68,5 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(cameraActivity);
             }
         });
-
-
     }
 }

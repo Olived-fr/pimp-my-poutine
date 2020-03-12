@@ -5,10 +5,8 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.widget.ImageView;
 
 import com.m2dl.pimpmypoutine.Map.Bean.DataPicture;
-import com.m2dl.pimpmypoutine.Map.Bean.MarkerIcon;
 import com.m2dl.pimpmypoutine.R;
 
 import org.osmdroid.util.GeoPoint;
@@ -53,32 +51,6 @@ public class MapApi {
         mLocationOverlay.enableMyLocation();
         myOpenMapView.setMultiTouchControls(true);
         myOpenMapView.getOverlays().add(mLocationOverlay);
-    }
-
-    private void setClick(final MapView myOpenMapView, Marker marker, final MarkerIcon markerIcon, final Resources resources) {
-        marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker, MapView mapView) {
-                Drawable image = markerIcon.getDrawable();
-                Bitmap bitmap = ((BitmapDrawable) image).getBitmap();
-                Drawable drawable;
-
-                if (marker.getInfoWindow().isOpen()) {
-                    drawable = new BitmapDrawable(resources, Bitmap.createScaledBitmap(bitmap, 50, 50, true));
-                    marker.setIcon(drawable);
-                    marker.closeInfoWindow();
-
-                } else {
-                    drawable = new BitmapDrawable(resources, Bitmap.createScaledBitmap(bitmap, 100, 100, true));
-                    marker.setIcon(drawable);
-                    marker.showInfoWindow();
-                }
-
-                myOpenMapView.getOverlays().add(marker);
-
-                return true;
-            }
-        });
     }
 
     public void addMarker( DataPicture dataPicture, File image, MapView myOpenMapView, Resources resources) {
