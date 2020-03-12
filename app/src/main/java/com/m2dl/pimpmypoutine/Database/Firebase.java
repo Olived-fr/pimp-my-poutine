@@ -63,11 +63,10 @@ public class Firebase {
             @Override
             public void onSuccess(ListResult result) {
                 for(StorageReference fileRef : result.getItems()) {
-
-                    Uri uri = Uri.parse(path);
-                    fileRef.getFile(new File("/storage/emulated/0/"+fileRef.getName()));
-                    uriList.add("/storage/emulated/0/"+fileRef.getName());
-                    System.out.println("/storage/emulated/0/"+fileRef.getName());
+                    String uri = path + fileRef.getName();
+                    fileRef.getFile(new File(uri));
+                    uriList.add(uri);
+                    System.out.println(uri);
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {

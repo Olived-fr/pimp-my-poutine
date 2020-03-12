@@ -151,6 +151,7 @@ public class MapApi {
 
             try {
                 ExifInterface exif = new ExifInterface(uri);
+                System.out.println("//////////////////////////////"+uri);
                 double lat = exif.getLatLong()[0];
                 double lng = exif.getLatLong()[1];
                 DataPicture dataPicture = new DataPicture();

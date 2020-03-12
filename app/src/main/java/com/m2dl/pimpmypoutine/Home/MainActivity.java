@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         final Firebase firebase = new Firebase();
-        firebase.getAllImages(getCacheDir().getPath());
+        firebase.getAllImages(getExternalCacheDir().getPath());
 
        //Configuration du bouton pour acceder à la carte
         Button openMap = findViewById(R.id.openMap);
