@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import com.m2dl.pimpmypoutine.Map.Bean.DataPicture;
 import com.m2dl.pimpmypoutine.Map.Bean.MarkerIcon;
@@ -26,6 +27,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.exifinterface.media.ExifInterface;
 
 public class MapApi {
     private List<MarkerIcon> markerIconList;
@@ -144,16 +147,21 @@ public class MapApi {
 
     public List<DataPicture> getDataPicture(List<String> uriList) {
         List<DataPicture> dataPictureList = new ArrayList<>();
-        double lat = 43;
-        double lng = 0;
         for (String uri : uriList) {
-            DataPicture dataPicture = new DataPicture();
-            dataPicture.setUrl(uri);
-            dataPicture.setLongitude(lng);
-            dataPicture.setLatitude(lat);
-            dataPictureList.add(dataPicture);
-            lng++;
-            lat++;
+
+            try {
+                ExifInterface exif = new ExifInterface(uri);
+                double lat = exif.getLatLong()[0];
+                double lng = exif.getLatLong()[1];
+                DataPicture dataPicture = new DataPicture();
+                dataPicture.setUrl(uri);
+                dataPicture.setLongitude(lng);
+                dataPicture.setLatitude(lat);
+                dataPictureList.add(dataPicture);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         return dataPictureList;
