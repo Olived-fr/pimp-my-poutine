@@ -1,8 +1,9 @@
 package com.m2dl.pimpmypoutine.Database;
 
-import android.app.ProgressDialog;
 import android.net.Uri;
+
 import androidx.annotation.NonNull;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -10,6 +11,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,13 +20,12 @@ import java.util.UUID;
 
 public class Firebase {
 
-    FirebaseStorage storage = FirebaseStorage.getInstance();
-    StorageReference storageRef = storage.getReferenceFromUrl("gs://pimp-my-poutine.appspot.com");
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://pimp-my-poutine.appspot.com");
 
 
     public Firebase(){
-        mAuth.signInAnonymously();
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuth.signInAnonymously();
     }
 
     public void uploadImage(String path){
