@@ -98,9 +98,9 @@ public class EditorView extends View {
                          if (firstTime) {
                             firstTime = false;
                          }
-                         int magField_xResult = (int) (50  + magField_x);
-                         int magField_yResult = (int) (50  + magField_y);
-                         int magField_zResult = (int) (50  + magField_z);
+                         int magField_xResult = (int) (80  + magField_x);
+                         int magField_yResult = (int) (80  + magField_y);
+                         int magField_zResult = (int) (80  + magField_z);
 
                          if (magField_xResult > 255) magField_xResult = 255;
                          if (magField_xResult < 0) magField_xResult = 0;

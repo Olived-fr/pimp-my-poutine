@@ -52,6 +52,7 @@ public class ShowPictureActivity extends AppCompatActivity {
                 Intent editor = new Intent(ShowPictureActivity.this, EditorActivity.class);
                 editor.putExtra("pathPhoto", pimpedPhoto);
                 startActivity(editor);
+                finish();
             }
         });
         returnButton.setOnClickListener(new View.OnClickListener() {
