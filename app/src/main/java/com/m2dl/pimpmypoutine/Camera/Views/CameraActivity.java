@@ -15,10 +15,6 @@ import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Build;
@@ -26,19 +22,16 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
-
-import android.os.Parcelable;
-import android.provider.Settings;
 import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import java.io.File;
@@ -46,8 +39,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Serializable;
-import java.lang.invoke.ConstantCallSite;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,28 +46,22 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
-
-import com.google.android.gms.maps.model.LatLng;
-import com.m2dl.pimpmypoutine.Camera.Models.PimpedPhoto;
-import com.m2dl.pimpmypoutine.Camera.Views.ShowPictureActivity;
 import com.m2dl.pimpmypoutine.R;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.CAMERA;
 
 public class CameraActivity extends AppCompatActivity {
     private static final String TAG = "AndroidCameraApi";
     private Button takePictureButton;
     private RelativeLayout relativeLayoutPhoto;
-    private TextView textView5;
-    double longitudeGPS, latitudeGPS;
-    private LocationManager locationManager;
-    private LocationListener listener;
-    public static PimpedPhoto pimpedPhoto;
     private TextureView textureView;
+    private ImageButton imageButton;
+    private String frontback= "0";
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
-
+    public static final String CAMERA_FRONT = "1";
+    public static final String CAMERA_BACK = "0";
     static {
         ORIENTATIONS.append(Surface.ROTATION_0, 90);
         ORIENTATIONS.append(Surface.ROTATION_90, 0);
@@ -87,30 +72,24 @@ public class CameraActivity extends AppCompatActivity {
     private String cameraId;
     protected CameraDevice cameraDevice;
     protected CameraCaptureSession cameraCaptureSessions;
-    protected CaptureRequest captureRequest;
     protected CaptureRequest.Builder captureRequestBuilder;
     private Size imageDimension;
     private ImageReader imageReader;
-    private File file;
     private static final int REQUEST_CAMERA_PERMISSION = 200;
-    private boolean mFlashSupported;
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         setContentView(R.layout.activity_android_camera_api);
         textureView = findViewById(R.id.texture);
         assert textureView != null;
         textureView.setSurfaceTextureListener(textureListener);
         takePictureButton = findViewById(R.id.btn_takepicture);
-        textView5 = findViewById(R.id.textView5);
         relativeLayoutPhoto = findViewById(R.id.relativeLayoutPhoto);
+        imageButton = findViewById(R.id.imageButton1);
 
-
-        textView5 = findViewById(R.id.textView5);
         assert takePictureButton != null;
 
         if (ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) !=
@@ -127,9 +106,20 @@ public class CameraActivity extends AppCompatActivity {
         takePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("onClick");
                 takePicture();
 
+            }
+        });
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              /*  if (frontback == 0) {
+                    frontback = 1;
+                } else {
+                    frontback = 0;
+                }*/
+                //openCamera();
+                switchCamera();
             }
         });
     }
@@ -179,7 +169,6 @@ public class CameraActivity extends AppCompatActivity {
         @Override
         public void onCaptureCompleted(CameraCaptureSession session, CaptureRequest request, TotalCaptureResult result) {
             super.onCaptureCompleted(session, request, result);
-            Toast.makeText(CameraActivity.this, "Saved:" + file, Toast.LENGTH_SHORT).show();
             createCameraPreview();
         }
     };
@@ -215,7 +204,6 @@ public class CameraActivity extends AppCompatActivity {
             }
             int width = relativeLayoutPhoto.getWidth();
             int height = relativeLayoutPhoto.getHeight();
-            Log.d("AndroidCameraApi0", "width " + width + " height" + height );
 
             if (jpegSizes != null && 0 < jpegSizes.length) {
                 width = jpegSizes[0].getWidth();
@@ -229,43 +217,26 @@ public class CameraActivity extends AppCompatActivity {
             captureBuilder.addTarget(reader.getSurface());
             captureBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
             // Orientation
-            int rotation = getWindowManager().getDefaultDisplay().getRotation();
-            captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
+            int rotation;
+            if(frontback.equals("1")) {
+               rotation = 270;
+            } else {
+                rotation = 90;
+            }
+            captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, rotation);
             final File file = new File(Environment.getExternalStorageDirectory() + "/pic.jpg");
             ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
                 @Override
                 public void onImageAvailable(ImageReader reader) {
                     Image image = null;
                     try {
-                        Log.d("AndroidCameraApi0", "lol");
-
                         image = reader.acquireLatestImage();
                         ByteBuffer buffer = image.getPlanes()[0].getBuffer();
                         byte[] bytes = new byte[buffer.capacity()];
                         buffer.get(bytes);
-                        getLocation();
-                        runOnUiThread(new Runnable() {
-
-                            @Override
-                            public void run() {
-                                textView5.setText("lat : " +  latitudeGPS + "long : " + longitudeGPS);
-
-                                // Stuff that updates the UI
-
-                            }
-                        });
-
-                        Location location = new Location("phoneLocation");
-                        location.setLatitude(latitudeGPS);
-                        location.setLongitude(longitudeGPS);
-                        Log.d("AndroidCameraApi", location.getProvider());
-                        Log.d("AndroidCameraApi", String.valueOf(location.getLongitude()));
-                        Log.d("AndroidCameraApi", String.valueOf(location.getLatitude()));
-                        pimpedPhoto = new PimpedPhoto(image, file.getPath(), location, file.getPath());
                         save(bytes);
                         Intent showPicture = new Intent(CameraActivity.this, ShowPictureActivity.class);
-                        showPicture.putExtra("pathPhoto", pimpedPhoto.getPath());
-
+                        showPicture.putExtra("pathPhoto", file.getPath());
                         startActivity(showPicture);
                     } catch (FileNotFoundException e) {
                         Log.d("AndroidCameraApi10", e.toString());
@@ -356,16 +327,22 @@ public class CameraActivity extends AppCompatActivity {
         CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
         Log.e(TAG, "is camera open");
         try {
-            cameraId = manager.getCameraIdList()[0];
+            cameraId = frontback;
+            Log.e(TAG, "cameraId" + cameraId);
+
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
             StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
             assert map != null;
+            Log.e(TAG, "test1" + cameraId);
+
             imageDimension = map.getOutputSizes(SurfaceTexture.class)[0];
             // Add permission for camera and let user grant the permission
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(CameraActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CAMERA_PERMISSION);
                 return;
             }
+            Log.e(TAG, "test2" + cameraId);
+
             manager.openCamera(cameraId, stateCallback, null);
         } catch (CameraAccessException e) {
             e.printStackTrace();
@@ -427,39 +404,26 @@ public class CameraActivity extends AppCompatActivity {
         super.onPause();
     }
 
-    public LatLng getLocation ()
-    {
-        // Get the location manager
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-        String bestProvider = locationManager.getBestProvider(criteria, false);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    Activity#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for Activity#requestPermissions for more details.
-                //   return ;
-            }
-        }
-        Location location = locationManager.getLastKnownLocation(bestProvider);
-        Double lat,lon;
-        try {
-            lat = location.getLatitude ();
-            latitudeGPS = location.getLatitude ();
-            lon = location.getLongitude ();
-            longitudeGPS = location.getLongitude ();
-            System.out.println("location.getLongitude()" + location.getLongitude());
-            System.out.println("location.getLongitude()" + location.getLatitude());
+    public void switchCamera() {
+        if (frontback.equals(CAMERA_FRONT)) {
+            frontback = CAMERA_BACK;
+            closeCamera();
+            reopenCamera();
+            imageButton.setImageResource(R.drawable.ic_menu_compass);
 
-            return new LatLng(lat, lon);
+        } else if (frontback.equals(CAMERA_BACK)) {
+            frontback = CAMERA_FRONT;
+            closeCamera();
+            reopenCamera();
+            imageButton.setImageResource(R.drawable.ic_menu_mylocation);
         }
-        catch (NullPointerException e){
-            e.printStackTrace();
-            return null;
+    }
+
+    public void reopenCamera() {
+        if (textureView.isAvailable()) {
+            openCamera();
+        } else {
+            textureView.setSurfaceTextureListener(textureListener);
         }
     }
 

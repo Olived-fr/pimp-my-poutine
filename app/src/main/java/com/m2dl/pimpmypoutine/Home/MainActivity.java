@@ -52,8 +52,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        final Firebase firebase = new Firebase();
-        firebase.getAllImages(getExternalCacheDir().getPath());
+        //final Firebase firebase = new Firebase();
+        //firebase.getAllImages(getExternalCacheDir().getPath());
 
        //Configuration du bouton pour acceder à la carte
         Button openMap = findViewById(R.id.openMap);
@@ -61,8 +61,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent mapActivity = new Intent(getBaseContext(), MapActivity.class);
-                ArrayList<String> list = firebase.getUriList();
-                mapActivity.putExtra("mylist", list);
+                //ArrayList<String> list = firebase.getUriList();
+                //mapActivity.putExtra("mylist", list);
                 startActivity(mapActivity);
             }
         });

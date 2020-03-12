@@ -13,18 +13,20 @@ import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import org.osmdroid.views.MapView;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
 
 public class Firebase {
 
     private ArrayList<String> uriList;
     private StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://pimp-my-poutine.appspot.com");
 
-    public Firebase(){
+    public Firebase() {
         uriList = new ArrayList<>();
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         firebaseAuth.signInAnonymously();
@@ -34,7 +36,7 @@ public class Firebase {
         return uriList;
     }
 
-    public void uploadImage(String path){
+    public void uploadImage(String path) {
 
         Uri filePath = Uri.fromFile(new File(path));
 
@@ -53,19 +55,23 @@ public class Firebase {
                         exception.printStackTrace();
                     }
                 });
-
     }
 
-    public List<String> getAllImages(final String path){
+    public List<String> getAllImages(final String path) {
 
         final List<String> listUri = new ArrayList<>();
 
         storageRef.child("/images").listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
             @Override
             public void onSuccess(ListResult result) {
-                for(StorageReference fileRef : result.getItems()) {
-                    String uri = path + fileRef.getName() + ".jpeg";
-                    fileRef.getFile(new File(uri));
+                for (StorageReference fileRef : result.getItems()) {
+                    String uri = path + fileRef.getName() + ".jpg";
+                    File newFile = new File(uri);
+                    try {
+                        newFile.createNewFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     uriList.add(uri);
                     System.out.println(uri);
                 }

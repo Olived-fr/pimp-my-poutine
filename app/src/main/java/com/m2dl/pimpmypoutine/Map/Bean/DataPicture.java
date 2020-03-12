@@ -1,9 +1,12 @@
 package com.m2dl.pimpmypoutine.Map.Bean;
 
+import java.io.File;
+
 public class DataPicture {
     private double latitude;
     private double longitude;
     private String url;
+    private File file;
 
     public String getUrl() {
         return url;
@@ -27,5 +30,13 @@ public class DataPicture {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
     }
 }
