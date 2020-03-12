@@ -5,16 +5,7 @@ import java.io.File;
 public class DataPicture {
     private double latitude;
     private double longitude;
-    private String url;
     private File file;
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
 
     public double getLatitude() {
         return latitude;
@@ -32,11 +23,11 @@ public class DataPicture {
         this.longitude = longitude;
     }
 
-    public File getFile() {
-        return file;
-    }
-
     public void setFile(File file) {
         this.file = file;
+    }
+
+    public File getFile() {
+        return file;
     }
 }

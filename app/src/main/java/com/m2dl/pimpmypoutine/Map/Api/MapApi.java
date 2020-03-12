@@ -53,7 +53,7 @@ public class MapApi {
         myOpenMapView.getOverlays().add(mLocationOverlay);
     }
 
-    public void addMarker( DataPicture dataPicture, File image, MapView myOpenMapView, Resources resources) {
+    public void addMarker( DataPicture dataPicture, MapView myOpenMapView, Resources resources) {
         Marker marker = new Marker(myOpenMapView);
 
         //On défini la position du marker
@@ -66,6 +66,8 @@ public class MapApi {
         Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
         Drawable icon = new BitmapDrawable(resources, Bitmap.createScaledBitmap(bitmap, 50, 50, true));
         marker.setIcon(icon);
+
+        File image = dataPicture.getFile();
         InputStream targetStream = null;
 
         try {

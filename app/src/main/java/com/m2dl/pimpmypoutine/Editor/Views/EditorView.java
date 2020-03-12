@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.LightingColorFilter;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
@@ -17,7 +16,6 @@ import android.hardware.SensorManager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageButton;
 
 import com.m2dl.pimpmypoutine.R;
 
@@ -27,6 +25,7 @@ import static android.content.Context.SENSOR_SERVICE;
 import static com.m2dl.pimpmypoutine.Editor.Views.EditorActivity.pimpedPhoto;
 
 public class EditorView extends View {
+
     Bitmap bitmap, bitmap2, bitmap3;
     private Integer poutineClick1 = 0;
     private Integer poutineClick2 = 0;
@@ -50,6 +49,7 @@ public class EditorView extends View {
     private SensorManager sensorManager;
     private Sensor lightSensor;
     private Sensor mMagneticField;
+
     public EditorView(Context context, AttributeSet attrs ) {
         super(context, attrs);
         File file = new File(pimpedPhoto);
@@ -59,9 +59,11 @@ public class EditorView extends View {
         bitmap2 = BitmapFactory.decodeFile(file.getAbsolutePath());
 
         SensorEventListener listener = new SensorEventListener() {
+
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
                 float value = sensorEvent.values[0];
+
                 if (luminosity < value - 5 || luminosity > value + 5) {
                     luminosity = value;
                     float lumi = luminosity * 5;
@@ -83,11 +85,13 @@ public class EditorView extends View {
                 float [] values = sensorEvent.values;
 
                  synchronized (this) {
+
                      if (currentField_x == 0 && currentField_y == 0 && currentField_z == 0) {
                          currentField_x = values[0];
                          currentField_y = values[1];
                          currentField_z = values[2];
                      }
+
                      float magField_x = values[0];
                      float magField_y = values[1];
                      float magField_z = values[2];
@@ -95,9 +99,11 @@ public class EditorView extends View {
                      if(currentField_x - magField_x > 5 || currentField_x - magField_x < -5
                      || currentField_y - magField_y > 5 || currentField_y - magField_y < -5
                      || currentField_z - magField_z > 5 || currentField_z - magField_z < -5) {
+
                          if (firstTime) {
                             firstTime = false;
                          }
+
                          int magField_xResult = (int) (80  + magField_x);
                          int magField_yResult = (int) (80  + magField_y);
                          int magField_zResult = (int) (80  + magField_z);
@@ -108,6 +114,7 @@ public class EditorView extends View {
                          if (magField_yResult < 0) magField_yResult = 0;
                          if (magField_zResult > 255) magField_zResult = 255;
                          if (magField_zResult < 0) magField_zResult = 0;
+
                          hexa1 = (int) magField_xResult;
                          hexa2 = (int) magField_yResult;
                          hexa3 = (int) magField_zResult;
@@ -117,6 +124,7 @@ public class EditorView extends View {
                          currentField_y = values[1];
                          currentField_z = values[2];
                          invalidate();
+
                      } else {
                          invalidate();
 
@@ -132,12 +140,10 @@ public class EditorView extends View {
                 listener, lightSensor, SensorManager.SENSOR_DELAY_UI);
         sensorManager.registerListener(
                 listenerMagnetic, mMagneticField, SensorManager.SENSOR_DELAY_NORMAL);
-
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        // TODO Auto-generated method stub
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 x = event.getX();
@@ -155,30 +161,36 @@ public class EditorView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        // TODO Auto-generated method stub
         super.onDraw(canvas);
+
         if (firstTime) {
             int w = canvas.getClipBounds().width();
             int h = canvas.getClipBounds().height();
             canvas.drawBitmap(bitmap2, null, new RectF(0, 0, w, h),  null);
+
         } else {
             int w = canvas.getClipBounds().width();
             int h = canvas.getClipBounds().height();
             canvas.drawBitmap(makeTintedBitmap(bitmap2, color), null, new RectF(0, 0, w, h),  null);
         }
+
         if(poutine1.equals("fromage")) {
             Drawable d = getResources().getDrawable(R.drawable.poutine2t);
             bitmap = drawableToBitmap(d);
+
             if (poutineClick1 == 1 && priorityg.equals("fromage")) {
+
                 if(priority.equals("fromage") && isPoutine == 1) {
                     x = coordPoutine1x;
                     y = coordPoutine1y;
                     isPoutinetest = 1;
                     priority = "";
                 }
+
                 canvas.drawBitmap(bitmap, x, y, null);
                 coordPoutine1x = x;
                 coordPoutine1y = y;
+
             } else if (poutineClick1 != 10) {
                 canvas.drawBitmap(bitmap, coordPoutine1x, coordPoutine1y, null);
             }
@@ -188,16 +200,20 @@ public class EditorView extends View {
             Drawable dr = getResources().getDrawable(R.drawable.poutine1t);
             //On transforme l'objet Drawable en Bitmap pour redéfinir sa taille
             bitmap3 = ((BitmapDrawable) dr).getBitmap();
+
             if (poutineClick2 == 2 && priorityg.equals("effiloché")) {
+
                 if(priority.equals("effiloché") && isPoutine == 2) {
                     x = coordPoutine2x;
                     y = coordPoutine2y;
                     isPoutinetest = 2;
                     priority = "";
                 }
+
                 canvas.drawBitmap(bitmap3, x, y, null);
                 coordPoutine2x = x;
                 coordPoutine2y = y;
+
             } else if (poutineClick2 != 20){
                 canvas.drawBitmap(bitmap3, coordPoutine2x, coordPoutine2y, null);
             }
@@ -212,7 +228,9 @@ public class EditorView extends View {
         c.drawBitmap(src, 0, 0, paint);
         return result;
     }
+
     public void getPoutine (String poutine) {
+
         if(poutine.equals("fromage"))  {
             if(this.poutine1.equals("fromage")) {
                 this.poutine1 = "";
@@ -221,6 +239,7 @@ public class EditorView extends View {
                    poutineClick2 = 2;
                 }
             }
+
             else {
                 this.poutine1 = poutine;
                     priorityg = "fromage";
@@ -231,6 +250,7 @@ public class EditorView extends View {
             priority = this.poutine1 ;
         }
         if(poutine.equals("effiloché")) {
+
             if(this.poutine2.equals("effiloché")) {
                 this.poutine2 = "";
                 if (this.poutine1.equals("fromage")) {
@@ -238,38 +258,28 @@ public class EditorView extends View {
                     poutineClick1 = 1;
                 }
             }
+
             else {
                 this.poutine2 = poutine;
                 priorityg = "effiloché";
             }
+
             if (poutineClick2 == 2) poutineClick2 = 20;
             else poutineClick2=2;
             if (isPoutinetest == 1 || isPoutinetest == 0) isPoutine = 2;
             priority = this.poutine2;
+
         }
         invalidate();
 
     }
-    public static Bitmap RotateBitmap(Bitmap source, float angle)
-    {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(angle);
-        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
-    }
-    public static Bitmap resizeBitmap(Bitmap orig,int newWidth,int newHeight){
-        int width = orig.getWidth();
-        int height = orig.getHeight();
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight) / height;
-        Matrix matrix = new Matrix();
-        matrix.postScale(scaleWidth, scaleHeight);
-        Bitmap resizedBitmap = Bitmap.createBitmap(orig, 0, 0,width, height, matrix, true);
-        return resizedBitmap;
-    }
+
     public static Bitmap drawableToBitmap (Drawable drawable) {
+
         if (drawable instanceof BitmapDrawable) {
             return ((BitmapDrawable)drawable).getBitmap();
         }
+
         Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -278,12 +288,11 @@ public class EditorView extends View {
     }
 
     public Bitmap validImage() {
-        //Firebase
         this.layout(0, 0, this.getMeasuredWidth(), this.getMeasuredHeight());
         this.setDrawingCacheEnabled(true);
         this.buildDrawingCache(true);
         Bitmap bitmap5 = Bitmap.createBitmap(this.getDrawingCache());
         this.setDrawingCacheEnabled(false);
-    return bitmap5;
+        return bitmap5;
     }
 }
