@@ -29,7 +29,9 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import java.io.File;
@@ -48,14 +50,18 @@ import androidx.core.app.ActivityCompat;
 import com.m2dl.pimpmypoutine.R;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.CAMERA;
 
 public class CameraActivity extends AppCompatActivity {
     private static final String TAG = "AndroidCameraApi";
     private Button takePictureButton;
     private RelativeLayout relativeLayoutPhoto;
     private TextureView textureView;
+    private ImageButton imageButton;
+    private String frontback= "0";
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
-
+    public static final String CAMERA_FRONT = "1";
+    public static final String CAMERA_BACK = "0";
     static {
         ORIENTATIONS.append(Surface.ROTATION_0, 90);
         ORIENTATIONS.append(Surface.ROTATION_90, 0);
@@ -82,6 +88,7 @@ public class CameraActivity extends AppCompatActivity {
         textureView.setSurfaceTextureListener(textureListener);
         takePictureButton = findViewById(R.id.btn_takepicture);
         relativeLayoutPhoto = findViewById(R.id.relativeLayoutPhoto);
+        imageButton = findViewById(R.id.imageButton1);
 
         assert takePictureButton != null;
 
@@ -101,6 +108,18 @@ public class CameraActivity extends AppCompatActivity {
             public void onClick(View v) {
                 takePicture();
 
+            }
+        });
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              /*  if (frontback == 0) {
+                    frontback = 1;
+                } else {
+                    frontback = 0;
+                }*/
+                //openCamera();
+                switchCamera();
             }
         });
     }
@@ -198,8 +217,13 @@ public class CameraActivity extends AppCompatActivity {
             captureBuilder.addTarget(reader.getSurface());
             captureBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
             // Orientation
-            int rotation = getWindowManager().getDefaultDisplay().getRotation();
-            captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
+            int rotation;
+            if(frontback.equals("1")) {
+               rotation = 270;
+            } else {
+                rotation = 90;
+            }
+            captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, rotation);
             final File file = new File(Environment.getExternalStorageDirectory() + "/pic.jpg");
             ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
                 @Override
@@ -303,16 +327,22 @@ public class CameraActivity extends AppCompatActivity {
         CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
         Log.e(TAG, "is camera open");
         try {
-            cameraId = manager.getCameraIdList()[0];
+            cameraId = frontback;
+            Log.e(TAG, "cameraId" + cameraId);
+
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
             StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
             assert map != null;
+            Log.e(TAG, "test1" + cameraId);
+
             imageDimension = map.getOutputSizes(SurfaceTexture.class)[0];
             // Add permission for camera and let user grant the permission
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(CameraActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CAMERA_PERMISSION);
                 return;
             }
+            Log.e(TAG, "test2" + cameraId);
+
             manager.openCamera(cameraId, stateCallback, null);
         } catch (CameraAccessException e) {
             e.printStackTrace();
@@ -373,4 +403,28 @@ public class CameraActivity extends AppCompatActivity {
         stopBackgroundThread();
         super.onPause();
     }
+
+    public void switchCamera() {
+        if (frontback.equals(CAMERA_FRONT)) {
+            frontback = CAMERA_BACK;
+            closeCamera();
+            reopenCamera();
+            imageButton.setImageResource(R.drawable.ic_menu_compass);
+
+        } else if (frontback.equals(CAMERA_BACK)) {
+            frontback = CAMERA_FRONT;
+            closeCamera();
+            reopenCamera();
+            imageButton.setImageResource(R.drawable.ic_menu_mylocation);
+        }
+    }
+
+    public void reopenCamera() {
+        if (textureView.isAvailable()) {
+            openCamera();
+        } else {
+            textureView.setSurfaceTextureListener(textureListener);
+        }
+    }
+
 }

@@ -40,7 +40,7 @@ public class ShowPictureActivity extends AppCompatActivity {
                     public void run() {
                         Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                         //A utiliser si pb d'angle'
-                        imageToValid.setImageBitmap(RotateBitmap(myBitmap,90));
+                        imageToValid.setImageBitmap(myBitmap);
                     }
                 });
             }

@@ -11,6 +11,7 @@ import androidx.exifinterface.media.ExifInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.Display;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -34,16 +35,13 @@ public class EditorActivity extends AppCompatActivity {
     static String pimpedPhoto;
     private ImageButton buttonFiltre1, buttonFiltre2;
     private Button buttonValid;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         pimpedPhoto = intent.getStringExtra("pathPhoto");
         setContentView(R.layout.activity_editor);
-
         viewtest =(EditorView) findViewById(R.id.editorView);
-
         buttonFiltre1 = findViewById(R.id.buttonFiltre1);
         buttonFiltre1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,6 +90,7 @@ public class EditorActivity extends AppCompatActivity {
                 firebase.uploadImage(f.getPath());
                 Intent mainActivity = new Intent(EditorActivity.this, MainActivity.class);
                 startActivity(mainActivity);
+                finish();
             }
         });
     }
@@ -104,14 +103,7 @@ public class EditorActivity extends AppCompatActivity {
         String bestProvider = locationManager.getBestProvider(criteria, false);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    Activity#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for Activity#requestPermissions for more details.
-                //   return ;
+
             }
         }
         Location location = locationManager.getLastKnownLocation(bestProvider);
