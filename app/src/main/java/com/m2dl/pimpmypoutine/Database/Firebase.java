@@ -1,6 +1,5 @@
 package com.m2dl.pimpmypoutine.Database;
 
-import android.app.ProgressDialog;
 import android.net.Uri;
 import androidx.annotation.NonNull;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -15,13 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-
 public class Firebase {
 
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReferenceFromUrl("gs://pimp-my-poutine.appspot.com");
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
-
 
     public Firebase(){
         mAuth.signInAnonymously();
@@ -46,7 +43,6 @@ public class Firebase {
                         exception.printStackTrace();
                     }
                 });
-
     }
 
     public List<String> getAllImages(){
